@@ -1,4 +1,10 @@
 
+SET NOCOUNT ON;
+SET ANSI_WARNINGS OFF;
+SET ANSI_PADDING OFF;
+SET QUOTED_IDENTIFIER OFF;
+USE [master];
+GO
 
 IF EXISTS (SELECT name FROM sys.databases WHERE name = N'defarge')
 BEGIN
@@ -12,6 +18,7 @@ GO
 
 -- Create the database
 CREATE DATABASE [defarge];
+GO
 
 -- Create a user in the database for the login
 USE [defarge];

@@ -13,7 +13,7 @@ namespace defarge
             domainName = "WorkflowProcess";
             tableName = "core.workflow_process";
             tableBaseName = "workflow_process";
-            auditTableName = "audit.core_workflow_process";
+            auditTableName = "history.core_workflow_process";
 
 
             rwk.Add("workflow_id");

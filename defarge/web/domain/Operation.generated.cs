@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Operation";
             tableName = "sec.operation";
             tableBaseName = "operation";
-            auditTableName = "audit.sec_operation";
+            auditTableName = "history.sec_operation";
 
         }
 

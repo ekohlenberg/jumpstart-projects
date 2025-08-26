@@ -13,7 +13,7 @@ namespace defarge
             domainName = "ResourceType";
             tableName = "app.resource_type";
             tableBaseName = "resource_type";
-            auditTableName = "audit.app_resource_type";
+            auditTableName = "history.app_resource_type";
 
 
             rwk.Add("name");

@@ -13,7 +13,7 @@ namespace defarge
             domainName = "OpRoleMap";
             tableName = "sec.op_role_map";
             tableBaseName = "op_role_map";
-            auditTableName = "audit.sec_op_role_map";
+            auditTableName = "history.sec_op_role_map";
 
 
             rwk.Add("op_id");

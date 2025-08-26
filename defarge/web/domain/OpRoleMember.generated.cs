@@ -13,10 +13,10 @@ namespace defarge
             domainName = "OpRoleMember";
             tableName = "sec.op_role_member";
             tableBaseName = "op_role_member";
-            auditTableName = "audit.sec_op_role_member";
+            auditTableName = "history.sec_op_role_member";
 
 
-            rwk.Add("user_id");
+            rwk.Add("principal_id");
             
             rwk.Add("op_role_id");
                     }
@@ -45,24 +45,24 @@ namespace defarge
             }
             
             [Label("Username")]
-            public long user_id
+            public long principal_id
             {
                 get
                 {
-                    long _user_id;
+                    long _principal_id;
 
-                             _user_id = default(long);
+                             _principal_id = default(long);
                                                  
-                    if(this.ContainsKey("user_id"))
+                    if(this.ContainsKey("principal_id"))
                     {
-                       _user_id = Convert.ToInt64(this["user_id"].ToString());
+                       _principal_id = Convert.ToInt64(this["principal_id"].ToString());
                     }
-                    return _user_id;
+                    return _principal_id;
                 }
                 set
                 {
                    
-                    this["user_id"] = value;
+                    this["principal_id"] = value;
                 }
             }
             

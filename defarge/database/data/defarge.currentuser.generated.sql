@@ -1,12 +1,16 @@
 -- =====================================
--- 1) Create Account for Current OS User
--- e.g.
--- \set afile `echo "$outputdir/a.csv"`
--- COPY (SELECT * FROM a) TO :'afile';
+-- 1) Create Account for Current OS Principal
 -- =====================================
-\set os_user `echo $LOGNAME`
+DECLARE @os_user NVARCHAR(50) = 
+    CASE 
+        WHEN CHARINDEX('\', SYSTEM_USER) > 0 
+        THEN RIGHT(SYSTEM_USER, LEN(SYSTEM_USER) - CHARINDEX('\', SYSTEM_USER))
+        ELSE SYSTEM_USER 
+    END;
+DECLARE @principal_id BIGINT, @password_id BIGINT, @role_member_id BIGINT;
 
-INSERT INTO app."user"(
+SELECT @principal_id = NEXT VALUE FOR app.principal_identity;
+INSERT INTO app.principal(
     id,
     first_name,
     last_name,
@@ -21,60 +25,66 @@ INSERT INTO app."user"(
     version
 )
 VALUES (
-    nextval('app.user_identity'),          -- Use next value from user_identity sequence
+    @principal_id,          -- Use next value from principal_identity sequence
     'Current',
-    'User',
-    :'os_user',                               -- Unique username
-    :'os_user'  || '@mydomain.com',
-    now(),
+    'Principal',
+    @os_user,                               -- Unique username
+    @os_user + '@mydomain.com',
+    GETDATE(),
     null,
     1,
     'system',
-    now(),
+    GETDATE(),
     'system',
     1
 );
 
-WITH os_user_user_id AS (
+SELECT @password_id = NEXT VALUE FOR sec.principal_password_identity;
+
+WITH os_user_principal_id AS (
     SELECT id
-    FROM app."user"
-    WHERE username = :'os_user'
+    FROM app.principal
+    WHERE username = @os_user
 )
-INSERT INTO sec.user_password(
-    id, user_id, password_hash, expiry, needs_reset, is_active, created_by, last_updated, last_updated_by, version)
-SELECT  nextval('sec.user_password_identity'),
-    os_user_user_id.id,
-     (floor(random() * 100000 + 1))::int::varchar,  
-     current_timestamp,
+
+INSERT INTO sec.principal_password(
+    id, principal_id, password_hash, expiry, needs_reset, is_active, created_by, last_updated, last_updated_by, version)
+SELECT  @password_id,
+    os_user_principal_id.id,
+     CAST(FLOOR(RAND(CHECKSUM(NEWID())) * 100000 + 1) AS NVARCHAR(10)),  
+     GETDATE(),
      1,
      1,
-     current_user,
-     current_timestamp,
-     current_user,
+     SYSTEM_USER,
+     GETDATE(),
+     SYSTEM_USER,
      1
 FROM
-    os_user_user_id;
+    os_user_principal_id;
 
 
 
 -- =====================================
--- 2) Map os_user User to os_user Role
---    Using sub-selects on sec."user" (by username)
+-- 2) Map os_user Principal to os_user Role
+--    Using sub-selects on sec.principal (by username)
 --    and sec.op_role (by name)
 -- =====================================
-WITH os_user_user_id AS (
+SELECT @role_member_id = NEXT VALUE FOR sec.op_role_member_identity;
+
+WITH os_user_principal_id AS (
     SELECT id
-    FROM app."user"
-    WHERE username = :'os_user'
+    FROM app.principal
+    WHERE username = @os_user
 ),
 os_user_role_id AS (
     SELECT id
     FROM sec.op_role
     WHERE name = 'Administrator'
 )
+
 INSERT INTO sec.op_role_member(
     id,
-    user_id,
+    principal_id,
     op_role_id,
     is_active,
     created_by,
@@ -83,15 +93,15 @@ INSERT INTO sec.op_role_member(
     version
 )
 SELECT
-    nextval('sec.op_role_member_identity'),  -- PK for op_role_member
-    os_user_user_id.id,
+    @role_member_id,  -- PK for op_role_member
+    os_user_principal_id.id,
     os_user_role_id.id,
     1,
     'system',
-    now(),
+    GETDATE(),
     'system',
     1
-FROM os_user_user_id
+FROM os_user_principal_id
 CROSS JOIN os_user_role_id;
 
 -- =====================================

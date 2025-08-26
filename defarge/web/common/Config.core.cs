@@ -42,6 +42,12 @@ namespace defarge
             return result;
         }
 
+        static public string getString(string param, string defaultValue)
+        {
+            string result = getString(param);
+            return string.IsNullOrEmpty(result) ? defaultValue : result;
+        }
+
         static public string getDbConnection()
         {
             // Path to the .namespace file in the user's home directory
@@ -59,26 +65,74 @@ namespace defarge
 
             // Split the content by colon (:) to extract parameters
             string[] parameters = fileContent.Split(':');
-            if (parameters.Length != 5)
+            if (parameters.Length != 3 && parameters.Length != 5)
             {
-                throw new FormatException("The .defarge file must contain exactly five parameters separated by colons (:).\nserver:port:database:user:password");
+                throw new FormatException("The .defarge file must contain either 3 or 5 parameters separated by colons (:).\nFormat: server:port:database[:username:password]");
             }
 
             string server = parameters[0];
             string port = parameters[1];
             string database = parameters[2];
-            string username = parameters[3];
-            string password = parameters[4];
+            string username = parameters.Length >= 4 ? parameters[3] : string.Empty;
+            string password = parameters.Length >= 5 ? parameters[4] : string.Empty;
 
-            // Create the connection string
-            string dbcon = "Host=^server;Port=^port;Username=^username;Password=^password;Database=^database;";
+            // Get database type from config (default to postgresql)
+            string dbType = getString("db.type", "postgresql").ToLower();
+
+            // Create the connection string based on database type and whether username/password are provided
+            string dbcon;
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {
+                // Full connection string with username and password
+                dbcon = getConnectionStringTemplate(dbType, true);
+            }
+            else
+            {
+                // Connection string without username and password (for trusted connections)
+                dbcon = getConnectionStringTemplate(dbType, false);
+            }
+
+            // Replace placeholders with actual values
             dbcon = dbcon.Replace("^server", server)
                         .Replace("^port", port)
-                        .Replace("^database", database)
-                        .Replace("^username", username)
-                        .Replace("^password", password);
+                        .Replace("^database", database);
+
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {
+                dbcon = dbcon.Replace("^username", username)
+                            .Replace("^password", password);
+            }
 
             return dbcon;
+        }
+
+        static private string getConnectionStringTemplate(string dbType, bool includeCredentials)
+        {
+            switch (dbType)
+            {
+                case "sqlserver":
+                case "mssql":
+                    if (includeCredentials)
+                    {
+                        return "Server=^server,^port;Database=^database;User Id=^username;Password=^password;TrustServerCertificate=true;";
+                    }
+                    else
+                    {
+                        return "Server=^server,^port;Database=^database;Trusted_Connection=true;TrustServerCertificate=true;";
+                    }
+
+                case "postgresql":
+                case "pgsql":
+                default:
+                    if (includeCredentials)
+                    {
+                        return "Host=^server;Port=^port;Database=^database;Username=^username;Password=^password;";
+                    }
+                    else
+                    {
+                        return "Host=^server;Port=^port;Database=^database;";
+                    }
+            }
         }
         
         static public int getInt(string param)

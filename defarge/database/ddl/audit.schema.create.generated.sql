@@ -1,12 +1,17 @@
+
+SET NOCOUNT ON;
+SET ANSI_WARNINGS OFF;
+SET ANSI_PADDING OFF;
+SET QUOTED_IDENTIFIER OFF;
 USE [defarge];
-
-CREATE SCHEMA audit; 
-
-CREATE TABLE IF NOT EXISTS audit.log (
+GO
+CREATE SCHEMA history; 
+GO
+CREATE TABLE history.log (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
     timestamp DATETIME NOT NULL,
     level VARCHAR(50) NOT NULL,
-    username VARCHAR(50) NOT NULL,
+    principalname VARCHAR(50) NOT NULL,
     program TEXT NOT NULL,
     filepath TEXT NOT NULL,
     linenumber INTEGER NOT NULL,

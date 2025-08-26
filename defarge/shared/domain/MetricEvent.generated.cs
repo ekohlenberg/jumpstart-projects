@@ -13,7 +13,7 @@ namespace defarge
             domainName = "MetricEvent";
             tableName = "app.metric_event";
             tableBaseName = "metric_event";
-            auditTableName = "audit.app_metric_event";
+            auditTableName = "history.app_metric_event";
 
 
             rwk.Add("metric_id");

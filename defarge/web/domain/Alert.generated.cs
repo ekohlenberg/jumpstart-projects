@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Alert";
             tableName = "app.alert";
             tableBaseName = "alert";
-            auditTableName = "audit.app_alert";
+            auditTableName = "history.app_alert";
 
         }
 

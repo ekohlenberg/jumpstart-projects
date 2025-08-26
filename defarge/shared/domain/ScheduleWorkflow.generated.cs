@@ -13,7 +13,7 @@ namespace defarge
             domainName = "ScheduleWorkflow";
             tableName = "core.schedule_workflow";
             tableBaseName = "schedule_workflow";
-            auditTableName = "audit.core_schedule_workflow";
+            auditTableName = "history.core_schedule_workflow";
 
         }
 

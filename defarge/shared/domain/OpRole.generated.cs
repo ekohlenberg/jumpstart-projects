@@ -13,7 +13,7 @@ namespace defarge
             domainName = "OpRole";
             tableName = "sec.op_role";
             tableBaseName = "op_role";
-            auditTableName = "audit.sec_op_role";
+            auditTableName = "history.sec_op_role";
 
 
             rwk.Add("name");

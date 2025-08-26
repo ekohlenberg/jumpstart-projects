@@ -5,31 +5,30 @@ using System.Text;
 using System.Configuration;
 using System.Data.Common;
 using System.Collections.Immutable;
-using Npgsql;
 using System.Linq;
 
 namespace defarge
 {
     public class DBPersist
     {
+        private static readonly IDatabaseProvider _provider = DatabaseProviderFactory.CreateProvider();
+        
         public delegate void SelectCallback(DbDataReader rdr);
         
         static public void select( SelectCallback selectCallback, string sql)
         {
-        
-            Logger.Debug($"Excuting sql {sql}.");
+            Logger.Debug($"Executing sql {sql}.");
             
             try
             {
                 string connectionStr = Config.getString("db.connection");
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionStr))
+                using (DbConnection connection = _provider.CreateConnection(connectionStr))
                 {
-                    connection.Open();
 
-                    using (DbCommand command = (DbCommand) new NpgsqlCommand(sql, connection))
+                    using (DbCommand command = _provider.CreateCommand(sql, connection))
                     {
-                        using (DbDataReader rdr = (DbDataReader) command.ExecuteReader())
+                        using (DbDataReader rdr = command.ExecuteReader())
                         {
                             while (rdr.Read())
                             {
@@ -50,9 +49,7 @@ namespace defarge
 
         static public void select( SelectCallback selectCallback, string sqlTemplate, BaseObject filter)
         {
-
             string sql = substituteTemplate(filter, sqlTemplate);
-
             select(selectCallback, sql);
         }
 
@@ -91,6 +88,7 @@ namespace defarge
 
             return id;
         }
+        
         static public void update(BaseObject baseObject)
         {
             baseObject["version"] = version(baseObject);
@@ -108,17 +106,18 @@ namespace defarge
             string sql = substituteTemplate(parameters, sqlTemplate);
             execCmd(sql);
         }
+        
         public static void execCmd(string sql)
         {
             try
             {
                 string connectionStr = Config.getString("db.connection");
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionStr))
+                using (DbConnection connection = _provider.CreateConnection(connectionStr))
                 {
-                    connection.Open();
+                    
 
-                    using (DbCommand command = (DbCommand) new NpgsqlCommand(sql, connection))
+                    using (DbCommand command = _provider.CreateCommand(sql, connection))
                     {
                         command.ExecuteNonQuery();
                         Logger.Debug(sql);
@@ -133,28 +132,25 @@ namespace defarge
 
         static string insertSql( BaseObject baseObject, string tableName )
         {
-            StringBuilder sql = new StringBuilder("insert into " + tableName + " ");
+            StringBuilder sql = new StringBuilder("insert into " + _provider.FormatTableName(tableName) + " ");
             StringBuilder cols = new StringBuilder("");
             StringBuilder vals = new StringBuilder("");
 
             foreach (string k in baseObject.Keys)
             {
-                //if (k != "id")
-                //{
-                    object v = baseObject[k];
-                    
-                    if (v == null) continue;
-                    if (v == DBNull.Value) continue;
-                    if (string.IsNullOrEmpty(v.ToString())) continue;
+                object v = baseObject[k];
+                
+                if (v == null) continue;
+                if (v == DBNull.Value) continue;
+                if (string.IsNullOrEmpty(v.ToString())) continue;
 
-                    if (cols.Length > 0)
-                    {
-                        cols.Append(",");
-                        vals.Append(",");
-                    }
-                    cols.Append(bracket(k));
-                    vals.Append(toSql(v));
-                //}
+                if (cols.Length > 0)
+                {
+                    cols.Append(",");
+                    vals.Append(",");
+                }
+                cols.Append(_provider.FormatColumnName(k));
+                vals.Append(_provider.FormatValue(v));
             }
 
             sql.Append("(");
@@ -168,14 +164,14 @@ namespace defarge
 
         static string updateSql( BaseObject baseObject)
         {
-            StringBuilder sql = new StringBuilder("update " + baseObject.tableName + " set ");
+            StringBuilder sql = new StringBuilder("update " + _provider.FormatTableName(baseObject.tableName) + " set ");
             StringBuilder expressions = new StringBuilder();
             StringBuilder where = new StringBuilder();
 
             exprSql(baseObject, baseObject.Keys, ", ", expressions);
 
             where.Append(" where id=");
-            where.Append(toSql(baseObject["id"]));
+            where.Append(_provider.FormatValue(baseObject["id"]));
 
             sql.Append(expressions);
             sql.Append(where);
@@ -190,7 +186,7 @@ namespace defarge
             {
                 if (k != "id")
                 {
-                    object v = toSql(baseObject[k]);
+                    object v = baseObject[k];
                     if (v == null) continue;
                     if (v == DBNull.Value) continue;
                     if (string.IsNullOrEmpty(v.ToString())) continue;
@@ -200,47 +196,13 @@ namespace defarge
                         expressions.Append(sepToken);
                     }
                     string expr = string.Empty;
-                    expr += bracket(k);
+                    expr += _provider.FormatColumnName(k);
                     expr += "=";
-                    expr += v;
+                    expr += _provider.FormatValue(v);
 
                     expressions.Append(expr);
                 }
             }
-        }
-
-        
-        static string bracket(string k)
-        {
-            //return "[" + k + "]";
-            return k;
-        }
-
-        static string toSql( object v)
-        {
-            string result = string.Empty;
-            if (v == null) return result;
-
-            if (v.GetType().Equals(typeof(DateTime)))
-            {
-                DateTime d = (DateTime)v;
-                result = "'" + d.ToString("MM/dd/yyyy HH:mm:ss") +"'";
-            }
-            else if (v.GetType().Equals(typeof(string)))
-            {
-                result = "'" + v.ToString().Replace("'", "''") + "'";
-            }
-            else if (v.GetType().FullName.Contains("Text"))
-            {
-                result = "'" + v.ToString().Replace("'", "''") + "'";
-            }
-            else
-            {
-                result = v.ToString();
-            }
-
-            return result;
-          
         }
 
         static public void get(BaseObject t)
@@ -255,16 +217,15 @@ namespace defarge
             select(sc, sql);
         }
 
-
         static public void put(BaseObject baseObject, string rwkCol)
         {
-            string sql = "select * from ^(tableName) where ^(rwkCol) = ^(rwkValue)";
+            string sql = "select * from " + _provider.FormatTableName("^(tableName)") + " where " + _provider.FormatColumnName("^(rwkCol)") + " = ^(rwkValue)";
             bool found = false;
 
             BaseObject filter = new BaseObject();
             filter["tableName"] = baseObject.tableName;
             filter["rwkCol"] = rwkCol;
-            filter["rwkValue"] = toSql(baseObject[rwkCol].ToString());
+            filter["rwkValue"] = _provider.FormatValue(baseObject[rwkCol].ToString());
 
             SelectCallback scb = (rdr) =>
             {
@@ -286,7 +247,7 @@ namespace defarge
 
         static public void put(BaseObject baseObject)
         {
-            string sql = "select * from ^(tableName) where ^(expression)";
+            string sql = "select * from " + _provider.FormatTableName("^(tableName)") + " where ^(expression)";
             int count = 0;
             StringBuilder expression = new StringBuilder();
 
@@ -324,9 +285,7 @@ namespace defarge
         {
             long id = 0;
 
-            //string sql = "select next value for object_identity";
-            string sql = "SELECT nextval('$(tableName)_identity');";
-            sql = sql.Replace("$(tableName)", baseObject.tableName);
+            string sql = _provider.GetNextIdentitySql(baseObject.tableName);
 
             SelectCallback scb = (rdr) =>
             {
@@ -341,17 +300,6 @@ namespace defarge
         static int version(BaseObject baseObject)
         {
             int ver = 0;
-
-            
-            
-            string sqlTemplate = @"with ver_check as (
-            select max(version) as v from ^(table)
-            where id=^(id)
-            union all select 0 as v
-            )
-            select max(v)+1 from ver_check";
-            
-            BaseObject p = new BaseObject();
             
             long id = 0;
             if (baseObject.ContainsKey("id"))
@@ -362,10 +310,7 @@ namespace defarge
                 }
             }
                 
-            
-            p["table"] = baseObject.tableName;
-            p["id"] = id;
-            string sql = substituteTemplate(p, sqlTemplate);
+            string sql = _provider.GetVersionSql(baseObject.tableName, id);
 
             SelectCallback scb = (rdr) =>
             {
@@ -376,6 +321,7 @@ namespace defarge
 
             return ver;
         }
+        
         static string getSql( BaseObject t)
         {
             string sqlTemplate = "select * from ^(table) where id=^(id)";
@@ -383,10 +329,9 @@ namespace defarge
             BaseObject p = new BaseObject();
 
             p["id"] = t["id"];
-            p["table"] = t.tableName;
+            p["table"] = _provider.FormatTableName(t.tableName);
 
             return substituteTemplate(p, sqlTemplate);
-
         }
 
         public static void autoAssign( DbDataReader rdr, BaseObject t)
@@ -414,6 +359,5 @@ namespace defarge
 
             return sb.ToString();
         }
-
     }
 }

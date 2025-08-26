@@ -5,7 +5,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Npgsql;
+using System.Data.Common;
 
 namespace defarge
 {
@@ -194,43 +194,104 @@ namespace defarge
 
     public class LogTableWriter : BaseLogWriter, ILogWriter
     {
+        private static readonly IDatabaseProvider _provider = DatabaseProviderFactory.CreateProvider();
+        private static string _connectionString = null;
+        private static string _tableName = null;
+        private static string _insertSql = null;
+        private static bool _initialized = false;
+        private static readonly object _initLock = new object();
+
+        private static void InitializeIfNeeded()
+        {
+            if (!_initialized)
+            {
+                lock (_initLock)
+                {
+                    if (!_initialized)
+                    {
+                        try
+                        {
+                            _connectionString = Config.getString("db.connection");
+                            _tableName = _provider.FormatTableName("history.log");
+                            _insertSql = $"INSERT INTO {_tableName} (level, timestamp, principalname, program, filepath, linenumber, membername, message) " +
+                                        "VALUES (@level, @timestamp, @principalname, @program, @filepath, @linenumber, @membername, @message);";
+                            _initialized = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.Error.WriteLine($"Failed to initialize LogTableWriter: {ex.Message}");
+                            _initialized = true; // Prevent repeated attempts
+                        }
+                    }
+                }
+            }
+        }
+
         public void Write(string level, string message, string filePath, int lineNumber, string memberName )
         {
-
             lock (Lock)
             {
-                string sql = string.Empty;
                 try
                 {
-                    string connectionStr = Config.getString("db.connection");
-                    NpgsqlConnection connection = new NpgsqlConnection(connectionStr);
-                    connection.Open();
-
-                   
-                    sql = "INSERT INTO audit.log (level, timestamp,  username, program, filepath, linenumber, membername, message) " +
-                                "VALUES (@level,  @timestamp, @username, @program, @filepath, @linenumber, @membername, @message);";
-
-                    using var command = new NpgsqlCommand(sql, connection);
-                    command.Parameters.AddWithValue("@level", level);
-                    command.Parameters.AddWithValue("@timestamp", DateTime.UtcNow);
-                    command.Parameters.AddWithValue("@username", Environment.UserName);
-                    command.Parameters.AddWithValue("@program", ProgramName);
-                    command.Parameters.AddWithValue("@filepath", filePath);
-                    command.Parameters.AddWithValue("@linenumber", lineNumber);
-                    command.Parameters.AddWithValue("@membername", memberName);
-                    command.Parameters.AddWithValue("@message", message);
+                    InitializeIfNeeded();
                     
-            
-                    command.ExecuteNonQuery();
+                    if (_connectionString == null)
+                    {
+                        // Database logging not available, skip silently
+                        return;
+                    }
 
-                    connection.Close();
+                    using (DbConnection connection = _provider.CreateConnection(_connectionString))
+                    {
+                        //Console.WriteLine("LogTableWriter: connection.Open()");
+                        //connection.Open();
+
+                        Console.WriteLine("LogTableWriter: _insertSql: " + _insertSql);
+
+                        var command = _provider.CreateCommand(_insertSql, connection);
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[0].ParameterName = "@level";
+                        command.Parameters[0].Value = level;
                         
-                            
-                    
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[1].ParameterName = "@timestamp";
+                        command.Parameters[1].Value = DateTime.UtcNow;
+                        
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[2].ParameterName = "@principalname";
+                        command.Parameters[2].Value = Environment.UserName;
+                        
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[3].ParameterName = "@program";
+                        command.Parameters[3].Value = ProgramName;
+                        
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[4].ParameterName = "@filepath";
+                        command.Parameters[4].Value = filePath;
+                        
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[5].ParameterName = "@linenumber";
+                        command.Parameters[5].Value = lineNumber;
+                        
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[6].ParameterName = "@membername";
+                        command.Parameters[6].Value = memberName;
+                        
+                        command.Parameters.Add(_provider.CreateParameter());
+                        command.Parameters[7].ParameterName = "@message";
+                        command.Parameters[7].Value = message;
+                        
+                        Console.WriteLine("LogTableWriter: command.ExecuteNonQuery()");
+                        command.ExecuteNonQuery();
+
+                        Console.WriteLine("LogTableWriter: connection.Close()");    
+                        connection.Close();
+                    }
                 }
                 catch(Exception x)
                 {
-                    Console.Error.WriteLine(x.Message + ": " + sql);
+                    Console.Error.WriteLine($"LogTableWriter error: {x.Message}");
+                    Console.Error.WriteLine(x.StackTrace);
                 }
             }
         }

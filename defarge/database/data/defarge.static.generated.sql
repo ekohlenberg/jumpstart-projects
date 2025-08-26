@@ -1,157 +1,461 @@
+DECLARE @operation_id BIGINT;
 
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Category', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Category', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Category', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Category', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Category', 'delete', 1, current_timestamp, current_user, current_user,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Uom', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Uom', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Uom', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Uom', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Uom', 'delete', 1, current_timestamp, current_user, current_user,1);
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Category', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ResourceType', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ResourceType', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ResourceType', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ResourceType', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ResourceType', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Category', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Org', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Org', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Org', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Org', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Org', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Category', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'User', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'User', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'User', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'User', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'User', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Category', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Category', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Operation', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Operation', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Operation', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Operation', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Operation', 'delete', 1, current_timestamp, current_user, current_user,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRole', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRole', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRole', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRole', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRole', 'delete', 1, current_timestamp, current_user, current_user,1);
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Uom', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Schedule', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Schedule', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Schedule', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Schedule', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Schedule', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Uom', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Workflow', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Workflow', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Workflow', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Workflow', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Workflow', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Uom', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Server', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Server', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Server', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Server', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Server', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Uom', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Metric', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Metric', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Metric', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Metric', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Metric', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Uom', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Resource', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Resource', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Resource', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Resource', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Resource', 'delete', 1, current_timestamp, current_user, current_user,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserOrg', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserOrg', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserOrg', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserOrg', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserOrg', 'delete', 1, current_timestamp, current_user, current_user,1);
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ResourceType', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserPassword', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserPassword', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserPassword', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserPassword', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'UserPassword', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ResourceType', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'EventService', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'EventService', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'EventService', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'EventService', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'EventService', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ResourceType', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Process', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Process', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Process', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Process', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Process', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ResourceType', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMap', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMap', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMap', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMap', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMap', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ResourceType', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMember', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMember', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMember', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMember', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'OpRoleMember', 'delete', 1, current_timestamp, current_user, current_user,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScheduleWorkflow', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScheduleWorkflow', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScheduleWorkflow', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScheduleWorkflow', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScheduleWorkflow', 'delete', 1, current_timestamp, current_user, current_user,1);
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Org', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricEvent', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricEvent', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricEvent', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricEvent', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricEvent', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Org', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'AlertRule', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'AlertRule', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'AlertRule', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'AlertRule', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'AlertRule', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Org', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricResourceMap', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricResourceMap', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricResourceMap', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricResourceMap', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricResourceMap', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Org', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Execution', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Execution', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Execution', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Execution', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Execution', 'delete', 1, current_timestamp, current_user, current_user,1);
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Org', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'WorkflowProcess', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'WorkflowProcess', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'WorkflowProcess', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'WorkflowProcess', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'WorkflowProcess', 'delete', 1, current_timestamp, current_user, current_user,1);
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Alert', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Alert', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Alert', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Alert', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Alert', 'delete', 1, current_timestamp, current_user, current_user,1);
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Principal', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Principal', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Principal', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Principal', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Principal', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Script', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Script', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Script', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Script', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Script', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Operation', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Operation', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Operation', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Operation', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Operation', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRole', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRole', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRole', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRole', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRole', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Schedule', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Schedule', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Schedule', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Schedule', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Schedule', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Workflow', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Workflow', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Workflow', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Workflow', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Workflow', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Server', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Server', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Server', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Server', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Server', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Query', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Query', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Query', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Query', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Query', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Metric', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Metric', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Metric', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Metric', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Metric', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Resource', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Resource', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Resource', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Resource', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Resource', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalOrg', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalOrg', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalOrg', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalOrg', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalOrg', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalPassword', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalPassword', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalPassword', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalPassword', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'PrincipalPassword', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'EventService', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'EventService', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'EventService', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'EventService', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'EventService', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Process', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Process', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Process', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Process', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Process', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMap', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMap', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMap', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMap', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMap', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMember', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMember', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMember', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMember', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'OpRoleMember', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ScheduleWorkflow', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ScheduleWorkflow', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ScheduleWorkflow', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ScheduleWorkflow', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'ScheduleWorkflow', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricEvent', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricEvent', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricEvent', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricEvent', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricEvent', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'AlertRule', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'AlertRule', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'AlertRule', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'AlertRule', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'AlertRule', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricResourceMap', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricResourceMap', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricResourceMap', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricResourceMap', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'MetricResourceMap', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Execution', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Execution', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Execution', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Execution', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Execution', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'WorkflowProcess', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'WorkflowProcess', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'WorkflowProcess', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'WorkflowProcess', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'WorkflowProcess', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		
+
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Alert', 'select', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Alert', 'get', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Alert', 'insert', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Alert', 'update', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
+		
+		SELECT @operation_id = NEXT VALUE FOR sec.operation_identity;
+		INSERT INTO sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) VALUES (@operation_id,'Alert', 'delete', 1, GETDATE(), SYSTEM_USER, SYSTEM_USER,1);
 		

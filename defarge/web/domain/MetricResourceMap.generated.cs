@@ -13,7 +13,7 @@ namespace defarge
             domainName = "MetricResourceMap";
             tableName = "app.metric_resource_map";
             tableBaseName = "metric_resource_map";
-            auditTableName = "audit.app_metric_resource_map";
+            auditTableName = "history.app_metric_resource_map";
 
 
             rwk.Add("resource_id");

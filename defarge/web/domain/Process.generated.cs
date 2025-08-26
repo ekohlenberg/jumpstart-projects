@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Process";
             tableName = "core.process";
             tableBaseName = "process";
-            auditTableName = "audit.core_process";
+            auditTableName = "history.core_process";
 
 
             rwk.Add("name");

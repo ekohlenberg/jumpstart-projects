@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Server";
             tableName = "core.server";
             tableBaseName = "server";
-            auditTableName = "audit.core_server";
+            auditTableName = "history.core_server";
 
 
             rwk.Add("name");

@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Script";
             tableName = "core.script";
             tableBaseName = "script";
-            auditTableName = "audit.core_script";
+            auditTableName = "history.core_script";
 
 
             rwk.Add("name");

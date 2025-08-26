@@ -13,7 +13,7 @@ namespace defarge
             domainName = "EventService";
             tableName = "core.event_service";
             tableBaseName = "event_service";
-            auditTableName = "audit.core_event_service";
+            auditTableName = "history.core_event_service";
 
 
             rwk.Add("event_type");

@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Category";
             tableName = "app.category";
             tableBaseName = "category";
-            auditTableName = "audit.app_category";
+            auditTableName = "history.app_category";
 
 
             rwk.Add("parent_id");

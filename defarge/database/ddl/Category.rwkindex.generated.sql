@@ -1,5 +1,10 @@
-USE [defarge];
 
+SET NOCOUNT ON;
+SET ANSI_WARNINGS OFF;
+SET ANSI_PADDING OFF;
+SET QUOTED_IDENTIFIER OFF;
+USE [defarge];
+GO
 
 CREATE UNIQUE INDEX rwk_app_category ON app.category (parent_id, name);
 

@@ -13,7 +13,7 @@ namespace defarge
             domainName = "AlertRule";
             tableName = "app.alert_rule";
             tableBaseName = "alert_rule";
-            auditTableName = "audit.app_alert_rule";
+            auditTableName = "history.app_alert_rule";
 
 
             rwk.Add("metric_id");

@@ -1,0 +1,117 @@
+@page "/edit-query"
+@page "/edit-query/{id:long}"
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@if(id == null)
+{
+	<h3>Create Query</h3>
+}
+else
+{
+	<h3>Edit Query @query.getRwkString() </h3>
+}
+
+<EditForm Model="query" onsubmit="HandleSubmit">
+	@{
+		Console.WriteLine("rendering");
+	}
+	<div>
+        <table>
+
+                <tr>
+                <td><label for="id">Query ID</label></td>
+		        <td><InputNumber id="id" @bind-Value="query.id" class="form-control" /></td>
+                </tr>
+                
+                <tr>
+                <td><label for="name">Name</label></td>
+		        <td><InputText id="name" @bind-Value="query.name" class="form-control" /></td>
+                </tr>
+                
+                <tr>
+                <td><label for="sql_text">SQL Text</label></td>
+		        <td><InputText id="sql_text" @bind-Value="query.sql_text" class="form-control" /></td>
+                </tr>
+                
+                <tr>
+                <td><label for="description">Description</label></td>
+		        <td><InputText id="description" @bind-Value="query.description" class="form-control" /></td>
+                </tr>
+                		
+
+				<tr>
+					<td>Active</td><td>@(query.is_active.ToString())</td>
+				</tr>
+				
+				<tr>
+					<td>Created By</td><td>@(query.created_by.ToString())</td>
+				</tr>
+				
+				<tr>
+					<td>Last Updated</td><td>@(query.last_updated.ToString())</td>
+				</tr>
+				
+				<tr>
+					<td>Last Updated By</td><td>@(query.last_updated_by.ToString())</td>
+				</tr>
+				
+				<tr>
+					<td>Version</td><td>@(query.version.ToString())</td>
+				</tr>
+							
+		</table>
+	</div>
+	<button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+	[Parameter]
+	public long? id {get;set;}
+
+	public Query query {get;set;} = new Query();
+
+	protected override async Task OnParametersSetAsync()
+	{
+		Console.WriteLine("getting data");
+		if (id is not null) {
+			var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+		var result = await remoteClient.GetFromJsonAsync<Query>($"api/query/{id}");
+		if (result is not null)
+			query = result;
+		}
+	
+	}
+
+	async Task  HandleSubmit()
+	{
+		var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+		if (id is not null) {
+			
+			var result = await remoteClient.PutAsJsonAsync<Query>($"api/query/{id}", query);
+				if (result is not null)
+				{
+					var readResult = await result.Content.ReadFromJsonAsync<Query>();
+					if (readResult is not null) 
+					{
+						query = readResult;
+					}
+				}
+		}
+		else
+		{
+			var result = await remoteClient.PostAsJsonAsync<Query>($"api/query", query);	
+			if (result is not null)
+				{
+					var readResult = await result.Content.ReadFromJsonAsync<Query>();
+					if (readResult is not null)
+					{
+						query = readResult;
+					}
+				}
+		}
+
+	}
+}   

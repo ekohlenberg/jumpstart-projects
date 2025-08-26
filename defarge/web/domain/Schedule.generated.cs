@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Schedule";
             tableName = "core.schedule";
             tableBaseName = "schedule";
-            auditTableName = "audit.core_schedule";
+            auditTableName = "history.core_schedule";
 
 
             rwk.Add("cron_expression");

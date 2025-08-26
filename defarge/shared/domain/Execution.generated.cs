@@ -13,7 +13,7 @@ namespace defarge
             domainName = "Execution";
             tableName = "core.execution";
             tableBaseName = "execution";
-            auditTableName = "audit.core_execution";
+            auditTableName = "history.core_execution";
 
 
             rwk.Add("token");
