@@ -1,0 +1,65 @@
+@page "/category"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Category</PageTitle>
+
+<h1>Category</h1>
+
+<p>This component demonstrates fetching Category data from the server.</p>
+
+@if (categoryList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@categoryList.Length} items");
+ 
+    
+    <DataTable Data="@categoryList" 
+               DataType="typeof(CategoryView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditCategory"
+               OnAdd="@OnAddCategory" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  CategoryView[]? categoryList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        categoryList = await remoteClient.GetFromJsonAsync<CategoryView[]>("api/category");
+        
+        Console.WriteLine($"ListTemplate: Loaded {categoryList?.Length ?? 0} category records");
+        if (categoryList != null && categoryList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {categoryList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddCategory()
+    {
+        Navigation.NavigateTo("edit-category");
+    }
+
+    async Task OnEditCategory(object item)
+    {
+        var category = (CategoryView)item;
+        Navigation.NavigateTo($"edit-category/{category.id}");
+    }
+
+}

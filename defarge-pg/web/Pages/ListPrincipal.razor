@@ -1,0 +1,65 @@
+@page "/principal"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Principal</PageTitle>
+
+<h1>Principal</h1>
+
+<p>This component demonstrates fetching Principal data from the server.</p>
+
+@if (principalList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@principalList.Length} items");
+ 
+    
+    <DataTable Data="@principalList" 
+               DataType="typeof(PrincipalView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditPrincipal"
+               OnAdd="@OnAddPrincipal" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  PrincipalView[]? principalList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        principalList = await remoteClient.GetFromJsonAsync<PrincipalView[]>("api/principal");
+        
+        Console.WriteLine($"ListTemplate: Loaded {principalList?.Length ?? 0} principal records");
+        if (principalList != null && principalList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {principalList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddPrincipal()
+    {
+        Navigation.NavigateTo("edit-principal");
+    }
+
+    async Task OnEditPrincipal(object item)
+    {
+        var principal = (PrincipalView)item;
+        Navigation.NavigateTo($"edit-principal/{principal.id}");
+    }
+
+}

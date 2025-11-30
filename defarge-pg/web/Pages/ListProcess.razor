@@ -1,0 +1,65 @@
+@page "/process"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Process</PageTitle>
+
+<h1>Process</h1>
+
+<p>This component demonstrates fetching Process data from the server.</p>
+
+@if (processList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@processList.Length} items");
+ 
+    
+    <DataTable Data="@processList" 
+               DataType="typeof(ProcessView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditProcess"
+               OnAdd="@OnAddProcess" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ProcessView[]? processList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        processList = await remoteClient.GetFromJsonAsync<ProcessView[]>("api/process");
+        
+        Console.WriteLine($"ListTemplate: Loaded {processList?.Length ?? 0} process records");
+        if (processList != null && processList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {processList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddProcess()
+    {
+        Navigation.NavigateTo("edit-process");
+    }
+
+    async Task OnEditProcess(object item)
+    {
+        var process = (ProcessView)item;
+        Navigation.NavigateTo($"edit-process/{process.id}");
+    }
+
+}

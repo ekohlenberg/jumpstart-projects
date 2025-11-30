@@ -1,0 +1,65 @@
+@page "/execstatus"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Execution Status</PageTitle>
+
+<h1>Execution Status</h1>
+
+<p>This component demonstrates fetching Execution Status data from the server.</p>
+
+@if (execstatusList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@execstatusList.Length} items");
+ 
+    
+    <DataTable Data="@execstatusList" 
+               DataType="typeof(ExecStatusView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditExecStatus"
+               OnAdd="@OnAddExecStatus" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ExecStatusView[]? execstatusList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        execstatusList = await remoteClient.GetFromJsonAsync<ExecStatusView[]>("api/execstatus");
+        
+        Console.WriteLine($"ListTemplate: Loaded {execstatusList?.Length ?? 0} execstatus records");
+        if (execstatusList != null && execstatusList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {execstatusList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddExecStatus()
+    {
+        Navigation.NavigateTo("edit-execstatus");
+    }
+
+    async Task OnEditExecStatus(object item)
+    {
+        var execstatus = (ExecStatusView)item;
+        Navigation.NavigateTo($"edit-execstatus/{execstatus.id}");
+    }
+
+}

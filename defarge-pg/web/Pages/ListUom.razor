@@ -1,0 +1,65 @@
+@page "/uom"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Unit of Measure</PageTitle>
+
+<h1>Unit of Measure</h1>
+
+<p>This component demonstrates fetching Unit of Measure data from the server.</p>
+
+@if (uomList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@uomList.Length} items");
+ 
+    
+    <DataTable Data="@uomList" 
+               DataType="typeof(UomView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditUom"
+               OnAdd="@OnAddUom" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  UomView[]? uomList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        uomList = await remoteClient.GetFromJsonAsync<UomView[]>("api/uom");
+        
+        Console.WriteLine($"ListTemplate: Loaded {uomList?.Length ?? 0} uom records");
+        if (uomList != null && uomList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {uomList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddUom()
+    {
+        Navigation.NavigateTo("edit-uom");
+    }
+
+    async Task OnEditUom(object item)
+    {
+        var uom = (UomView)item;
+        Navigation.NavigateTo($"edit-uom/{uom.id}");
+    }
+
+}

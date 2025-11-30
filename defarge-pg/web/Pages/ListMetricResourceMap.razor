@@ -1,0 +1,65 @@
+@page "/metricresourcemap"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Metric Resource Map</PageTitle>
+
+<h1>Metric Resource Map</h1>
+
+<p>This component demonstrates fetching Metric Resource Map data from the server.</p>
+
+@if (metricresourcemapList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@metricresourcemapList.Length} items");
+ 
+    
+    <DataTable Data="@metricresourcemapList" 
+               DataType="typeof(MetricResourceMapView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditMetricResourceMap"
+               OnAdd="@OnAddMetricResourceMap" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  MetricResourceMapView[]? metricresourcemapList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        metricresourcemapList = await remoteClient.GetFromJsonAsync<MetricResourceMapView[]>("api/metricresourcemap");
+        
+        Console.WriteLine($"ListTemplate: Loaded {metricresourcemapList?.Length ?? 0} metricresourcemap records");
+        if (metricresourcemapList != null && metricresourcemapList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {metricresourcemapList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddMetricResourceMap()
+    {
+        Navigation.NavigateTo("edit-metricresourcemap");
+    }
+
+    async Task OnEditMetricResourceMap(object item)
+    {
+        var metricresourcemap = (MetricResourceMapView)item;
+        Navigation.NavigateTo($"edit-metricresourcemap/{metricresourcemap.id}");
+    }
+
+}

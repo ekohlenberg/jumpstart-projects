@@ -1,0 +1,65 @@
+@page "/execution"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Execution Log</PageTitle>
+
+<h1>Execution Log</h1>
+
+<p>This component demonstrates fetching Execution Log data from the server.</p>
+
+@if (executionList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@executionList.Length} items");
+ 
+    
+    <DataTable Data="@executionList" 
+               DataType="typeof(ExecutionView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditExecution"
+               OnAdd="@OnAddExecution" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ExecutionView[]? executionList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        executionList = await remoteClient.GetFromJsonAsync<ExecutionView[]>("api/execution");
+        
+        Console.WriteLine($"ListTemplate: Loaded {executionList?.Length ?? 0} execution records");
+        if (executionList != null && executionList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {executionList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddExecution()
+    {
+        Navigation.NavigateTo("edit-execution");
+    }
+
+    async Task OnEditExecution(object item)
+    {
+        var execution = (ExecutionView)item;
+        Navigation.NavigateTo($"edit-execution/{execution.id}");
+    }
+
+}

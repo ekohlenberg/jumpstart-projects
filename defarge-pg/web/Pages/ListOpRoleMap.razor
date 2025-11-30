@@ -1,0 +1,65 @@
+@page "/oprolemap"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Operation Group Map</PageTitle>
+
+<h1>Operation Group Map</h1>
+
+<p>This component demonstrates fetching Operation Group Map data from the server.</p>
+
+@if (oprolemapList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@oprolemapList.Length} items");
+ 
+    
+    <DataTable Data="@oprolemapList" 
+               DataType="typeof(OpRoleMapView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditOpRoleMap"
+               OnAdd="@OnAddOpRoleMap" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  OpRoleMapView[]? oprolemapList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        oprolemapList = await remoteClient.GetFromJsonAsync<OpRoleMapView[]>("api/oprolemap");
+        
+        Console.WriteLine($"ListTemplate: Loaded {oprolemapList?.Length ?? 0} oprolemap records");
+        if (oprolemapList != null && oprolemapList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {oprolemapList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddOpRoleMap()
+    {
+        Navigation.NavigateTo("edit-oprolemap");
+    }
+
+    async Task OnEditOpRoleMap(object item)
+    {
+        var oprolemap = (OpRoleMapView)item;
+        Navigation.NavigateTo($"edit-oprolemap/{oprolemap.id}");
+    }
+
+}

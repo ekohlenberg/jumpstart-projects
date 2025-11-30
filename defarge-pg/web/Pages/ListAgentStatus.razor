@@ -1,0 +1,65 @@
+@page "/agentstatus"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Agent Status</PageTitle>
+
+<h1>Agent Status</h1>
+
+<p>This component demonstrates fetching Agent Status data from the server.</p>
+
+@if (agentstatusList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@agentstatusList.Length} items");
+ 
+    
+    <DataTable Data="@agentstatusList" 
+               DataType="typeof(AgentStatusView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditAgentStatus"
+               OnAdd="@OnAddAgentStatus" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  AgentStatusView[]? agentstatusList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        agentstatusList = await remoteClient.GetFromJsonAsync<AgentStatusView[]>("api/agentstatus");
+        
+        Console.WriteLine($"ListTemplate: Loaded {agentstatusList?.Length ?? 0} agentstatus records");
+        if (agentstatusList != null && agentstatusList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {agentstatusList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddAgentStatus()
+    {
+        Navigation.NavigateTo("edit-agentstatus");
+    }
+
+    async Task OnEditAgentStatus(object item)
+    {
+        var agentstatus = (AgentStatusView)item;
+        Navigation.NavigateTo($"edit-agentstatus/{agentstatus.id}");
+    }
+
+}

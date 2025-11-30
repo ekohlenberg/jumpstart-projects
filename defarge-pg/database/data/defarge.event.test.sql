@@ -1,0 +1,137 @@
+INSERT INTO core.script(
+	id, name, source, script_type_id, is_active, created_by, last_updated, last_updated_by, version)
+	VALUES (nextval('core.script_identity'), 'all-object insert event', 
+'using System;
+using System.IO;
+using defarge;
+
+namespace Generated
+{
+    public class AllObjectInsertEventScript : IScript
+    {
+        public void Execute(ScriptContext context)
+        {
+            Console.WriteLine("all-object insert event");
+        }
+    }
+}', 1, 1, current_user, current_timestamp, current_user, 1);
+
+INSERT INTO core.script(
+	id, name, source, script_type_id, is_active, created_by, last_updated, last_updated_by, version)
+	VALUES (nextval('core.script_identity'), 'all-object update event', 
+'using System;
+using System.IO;
+using defarge;
+
+namespace Generated
+{
+    public class AllObjectUpdateEventScript : IScript
+    {
+        public void Execute(ScriptContext context)
+        {
+            Console.WriteLine("all-object update event");
+        }
+    }
+}', 1, 1, current_user, current_timestamp, current_user, 1);
+
+INSERT INTO core.script(
+	id, name, source, script_type_id, is_active, created_by, last_updated, last_updated_by, version)
+	VALUES (nextval('core.script_identity'), 'test hello-world script', 
+'using System;
+using System.IO;
+using defarge;
+
+namespace Generated
+{
+    public class HelloWorldScript : IScript
+    {
+        public void Execute(ScriptContext context)
+        {
+            Console.WriteLine("Hello, World!");
+        }
+    }
+}', 1, 1, current_user, current_timestamp, current_user, 1);
+
+INSERT INTO core.script(
+	id, name, source, script_type_id, is_active, created_by, last_updated, last_updated_by, version)
+	VALUES (nextval('core.script_identity'), 'test infinite loop script', 
+'using System;
+using System.Threading;
+using System.IO;
+using defarge;
+
+namespace Generated
+{
+    public class InfiniteLoopScript : IScript
+    {
+        public void Execute(ScriptContext context)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Console.WriteLine($"Long loop: {i}");
+                Thread.Sleep(1000);
+            }
+        }
+    }
+}', 1, 1, current_user, current_timestamp, current_user, 1);
+
+INSERT INTO core.script(
+	id, name, source, script_type_id, is_active, created_by, last_updated, last_updated_by, version)
+	VALUES (nextval('core.script_identity'), 'test failure script', 
+'using System;
+using System.IO;
+using defarge;
+
+namespace Generated
+{
+    public class FailureScript : IScript
+    {
+        public void Execute(ScriptContext context)
+        {
+            throw new Exception("Test failure");
+        }
+    }
+}', 1, 1, current_user, current_timestamp, current_user, 1);
+
+
+-- Insert process records for all test scripts
+INSERT INTO core.process(
+	id, name, script_id, is_active, created_by, last_updated, last_updated_by, version)
+SELECT 
+	nextval('core.process_identity'),
+	s.name,
+	s.id,
+	1,
+	current_user,
+	current_timestamp,
+	current_user,
+	1
+FROM core.script s
+WHERE s.name LIKE 'test%';
+
+-- Insert workflow record for test workflow
+INSERT INTO core.workflow(
+	id, parent_workflow_id, name, description, is_active, created_by, last_updated, last_updated_by, version)
+	VALUES (nextval('core.workflow_identity'), null, 'test workflow', 'test workflow', 1, current_user, current_timestamp, current_user, 1);
+
+
+
+WITH all_object_insert_script AS (
+    SELECT id
+    FROM core."script"
+    WHERE name = 'all-object insert event'
+)
+INSERT INTO core.event_service(
+	id, event_type, objectname_filter, methodname_filter, script_id, is_active, created_by, last_updated, last_updated_by, version)
+SELECT nextval('core.event_service_identity'), 'pre', '%', 'insert', all_object_insert_script.id, 1, current_user, current_timestamp, current_user, 1
+FROM all_object_insert_script;
+
+WITH all_object_update_script AS (
+    SELECT id
+    FROM core."script"
+    WHERE name = 'all-object update event'
+)
+INSERT INTO core.event_service(
+	id, event_type, objectname_filter, methodname_filter, script_id, is_active, created_by, last_updated, last_updated_by, version)
+SELECT nextval('core.event_service_identity'), 'post', '%', 'update', all_object_update_script.id, 1, current_user, current_timestamp, current_user, 1
+FROM all_object_update_script;

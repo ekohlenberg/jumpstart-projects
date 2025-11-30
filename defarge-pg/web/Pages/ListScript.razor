@@ -1,0 +1,65 @@
+@page "/script"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Scripts</PageTitle>
+
+<h1>Scripts</h1>
+
+<p>This component demonstrates fetching Scripts data from the server.</p>
+
+@if (scriptList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@scriptList.Length} items");
+ 
+    
+    <DataTable Data="@scriptList" 
+               DataType="typeof(ScriptView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditScript"
+               OnAdd="@OnAddScript" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ScriptView[]? scriptList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        scriptList = await remoteClient.GetFromJsonAsync<ScriptView[]>("api/script");
+        
+        Console.WriteLine($"ListTemplate: Loaded {scriptList?.Length ?? 0} script records");
+        if (scriptList != null && scriptList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {scriptList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddScript()
+    {
+        Navigation.NavigateTo("edit-script");
+    }
+
+    async Task OnEditScript(object item)
+    {
+        var script = (ScriptView)item;
+        Navigation.NavigateTo($"edit-script/{script.id}");
+    }
+
+}

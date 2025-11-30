@@ -1,0 +1,65 @@
+@page "/alert"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Alert</PageTitle>
+
+<h1>Alert</h1>
+
+<p>This component demonstrates fetching Alert data from the server.</p>
+
+@if (alertList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@alertList.Length} items");
+ 
+    
+    <DataTable Data="@alertList" 
+               DataType="typeof(AlertView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditAlert"
+               OnAdd="@OnAddAlert" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  AlertView[]? alertList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        alertList = await remoteClient.GetFromJsonAsync<AlertView[]>("api/alert");
+        
+        Console.WriteLine($"ListTemplate: Loaded {alertList?.Length ?? 0} alert records");
+        if (alertList != null && alertList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {alertList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddAlert()
+    {
+        Navigation.NavigateTo("edit-alert");
+    }
+
+    async Task OnEditAlert(object item)
+    {
+        var alert = (AlertView)item;
+        Navigation.NavigateTo($"edit-alert/{alert.id}");
+    }
+
+}

@@ -1,0 +1,65 @@
+@page "/schedulerstatus"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Scheduler Status</PageTitle>
+
+<h1>Scheduler Status</h1>
+
+<p>This component demonstrates fetching Scheduler Status data from the server.</p>
+
+@if (schedulerstatusList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@schedulerstatusList.Length} items");
+ 
+    
+    <DataTable Data="@schedulerstatusList" 
+               DataType="typeof(SchedulerStatusView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditSchedulerStatus"
+               OnAdd="@OnAddSchedulerStatus" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  SchedulerStatusView[]? schedulerstatusList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        schedulerstatusList = await remoteClient.GetFromJsonAsync<SchedulerStatusView[]>("api/schedulerstatus");
+        
+        Console.WriteLine($"ListTemplate: Loaded {schedulerstatusList?.Length ?? 0} schedulerstatus records");
+        if (schedulerstatusList != null && schedulerstatusList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {schedulerstatusList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddSchedulerStatus()
+    {
+        Navigation.NavigateTo("edit-schedulerstatus");
+    }
+
+    async Task OnEditSchedulerStatus(object item)
+    {
+        var schedulerstatus = (SchedulerStatusView)item;
+        Navigation.NavigateTo($"edit-schedulerstatus/{schedulerstatus.id}");
+    }
+
+}

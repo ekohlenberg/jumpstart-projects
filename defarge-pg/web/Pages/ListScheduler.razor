@@ -1,0 +1,65 @@
+@page "/scheduler"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Scheduler</PageTitle>
+
+<h1>Scheduler</h1>
+
+<p>This component demonstrates fetching Scheduler data from the server.</p>
+
+@if (schedulerList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@schedulerList.Length} items");
+ 
+    
+    <DataTable Data="@schedulerList" 
+               DataType="typeof(SchedulerView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditScheduler"
+               OnAdd="@OnAddScheduler" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  SchedulerView[]? schedulerList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        schedulerList = await remoteClient.GetFromJsonAsync<SchedulerView[]>("api/scheduler");
+        
+        Console.WriteLine($"ListTemplate: Loaded {schedulerList?.Length ?? 0} scheduler records");
+        if (schedulerList != null && schedulerList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {schedulerList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddScheduler()
+    {
+        Navigation.NavigateTo("edit-scheduler");
+    }
+
+    async Task OnEditScheduler(object item)
+    {
+        var scheduler = (SchedulerView)item;
+        Navigation.NavigateTo($"edit-scheduler/{scheduler.id}");
+    }
+
+}

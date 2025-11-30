@@ -1,0 +1,65 @@
+@page "/workflowprocess"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle></PageTitle>
+
+<h1></h1>
+
+<p>This component demonstrates fetching  data from the server.</p>
+
+@if (workflowprocessList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@workflowprocessList.Length} items");
+ 
+    
+    <DataTable Data="@workflowprocessList" 
+               DataType="typeof(WorkflowProcessView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditWorkflowProcess"
+               OnAdd="@OnAddWorkflowProcess" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  WorkflowProcessView[]? workflowprocessList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        workflowprocessList = await remoteClient.GetFromJsonAsync<WorkflowProcessView[]>("api/workflowprocess");
+        
+        Console.WriteLine($"ListTemplate: Loaded {workflowprocessList?.Length ?? 0} workflowprocess records");
+        if (workflowprocessList != null && workflowprocessList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {workflowprocessList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddWorkflowProcess()
+    {
+        Navigation.NavigateTo("edit-workflowprocess");
+    }
+
+    async Task OnEditWorkflowProcess(object item)
+    {
+        var workflowprocess = (WorkflowProcessView)item;
+        Navigation.NavigateTo($"edit-workflowprocess/{workflowprocess.id}");
+    }
+
+}

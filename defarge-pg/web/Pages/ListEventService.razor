@@ -1,0 +1,65 @@
+@page "/eventservice"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Events</PageTitle>
+
+<h1>Events</h1>
+
+<p>This component demonstrates fetching Events data from the server.</p>
+
+@if (eventserviceList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@eventserviceList.Length} items");
+ 
+    
+    <DataTable Data="@eventserviceList" 
+               DataType="typeof(EventServiceView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditEventService"
+               OnAdd="@OnAddEventService" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  EventServiceView[]? eventserviceList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        eventserviceList = await remoteClient.GetFromJsonAsync<EventServiceView[]>("api/eventservice");
+        
+        Console.WriteLine($"ListTemplate: Loaded {eventserviceList?.Length ?? 0} eventservice records");
+        if (eventserviceList != null && eventserviceList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {eventserviceList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddEventService()
+    {
+        Navigation.NavigateTo("edit-eventservice");
+    }
+
+    async Task OnEditEventService(object item)
+    {
+        var eventservice = (EventServiceView)item;
+        Navigation.NavigateTo($"edit-eventservice/{eventservice.id}");
+    }
+
+}

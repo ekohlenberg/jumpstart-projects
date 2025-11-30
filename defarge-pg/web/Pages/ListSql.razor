@@ -1,0 +1,65 @@
+@page "/sql"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Query</PageTitle>
+
+<h1>Query</h1>
+
+<p>This component demonstrates fetching Query data from the server.</p>
+
+@if (sqlList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@sqlList.Length} items");
+ 
+    
+    <DataTable Data="@sqlList" 
+               DataType="typeof(SqlView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditSql"
+               OnAdd="@OnAddSql" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  SqlView[]? sqlList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        sqlList = await remoteClient.GetFromJsonAsync<SqlView[]>("api/sql");
+        
+        Console.WriteLine($"ListTemplate: Loaded {sqlList?.Length ?? 0} sql records");
+        if (sqlList != null && sqlList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {sqlList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddSql()
+    {
+        Navigation.NavigateTo("edit-sql");
+    }
+
+    async Task OnEditSql(object item)
+    {
+        var sql = (SqlView)item;
+        Navigation.NavigateTo($"edit-sql/{sql.id}");
+    }
+
+}

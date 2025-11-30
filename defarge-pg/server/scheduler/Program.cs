@@ -1,0 +1,69 @@
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Access-Control-Allow-Origin",
+                    builder =>
+                    {
+                        builder.WithOrigins("*")
+                           .AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    });
+
+});
+
+var app = builder.Build();
+
+// Start dispatcher thread
+var dispatcherThread = new defarge.DispatcherThread();
+dispatcherThread.Start();
+
+// Start health monitor thread
+var healthMonitorThread = new defarge.HealthMonitorThread(TimeSpan.FromSeconds(30));
+healthMonitorThread.Start();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseCors("Access-Control-Allow-Origin");
+
+//app.UseHttpsRedirection();
+
+//app.UseAuthorization();
+
+app.MapControllers();
+
+// Graceful shutdown - complete pending jobs
+app.Lifetime.ApplicationStopping.Register(() =>
+{
+    Console.WriteLine("Application stopping - completing pending jobs...");
+    
+    // Stop health monitor
+    healthMonitorThread.Stop();
+    
+    // Stop accepting new jobs
+    defarge.DispatcherThread.Queue.CompleteAdding();
+    
+    // Wait for dispatcher thread to finish (with timeout)
+    if (!dispatcherThread.Join(TimeSpan.FromSeconds(30)))
+    {
+        Console.WriteLine("Warning: Dispatcher thread did not complete within timeout");
+    }
+    
+    // Wait for health monitor thread to finish (with timeout)
+    if (!healthMonitorThread.Join(TimeSpan.FromSeconds(5)))
+    {
+        Console.WriteLine("Warning: Health monitor thread did not complete within timeout");
+    }
+});
+
+app.Run();

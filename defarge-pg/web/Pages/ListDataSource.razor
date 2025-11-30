@@ -1,0 +1,65 @@
+@page "/datasource"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Data Source</PageTitle>
+
+<h1>Data Source</h1>
+
+<p>This component demonstrates fetching Data Source data from the server.</p>
+
+@if (datasourceList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@datasourceList.Length} items");
+ 
+    
+    <DataTable Data="@datasourceList" 
+               DataType="typeof(DataSourceView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditDataSource"
+               OnAdd="@OnAddDataSource" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  DataSourceView[]? datasourceList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        datasourceList = await remoteClient.GetFromJsonAsync<DataSourceView[]>("api/datasource");
+        
+        Console.WriteLine($"ListTemplate: Loaded {datasourceList?.Length ?? 0} datasource records");
+        if (datasourceList != null && datasourceList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {datasourceList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddDataSource()
+    {
+        Navigation.NavigateTo("edit-datasource");
+    }
+
+    async Task OnEditDataSource(object item)
+    {
+        var datasource = (DataSourceView)item;
+        Navigation.NavigateTo($"edit-datasource/{datasource.id}");
+    }
+
+}

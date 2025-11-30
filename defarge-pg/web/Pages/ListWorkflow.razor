@@ -1,0 +1,65 @@
+@page "/workflow"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Workflow</PageTitle>
+
+<h1>Workflow</h1>
+
+<p>This component demonstrates fetching Workflow data from the server.</p>
+
+@if (workflowList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@workflowList.Length} items");
+ 
+    
+    <DataTable Data="@workflowList" 
+               DataType="typeof(WorkflowView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditWorkflow"
+               OnAdd="@OnAddWorkflow" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  WorkflowView[]? workflowList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        workflowList = await remoteClient.GetFromJsonAsync<WorkflowView[]>("api/workflow");
+        
+        Console.WriteLine($"ListTemplate: Loaded {workflowList?.Length ?? 0} workflow records");
+        if (workflowList != null && workflowList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {workflowList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddWorkflow()
+    {
+        Navigation.NavigateTo("edit-workflow");
+    }
+
+    async Task OnEditWorkflow(object item)
+    {
+        var workflow = (WorkflowView)item;
+        Navigation.NavigateTo($"edit-workflow/{workflow.id}");
+    }
+
+}

@@ -1,0 +1,65 @@
+@page "/navmenu"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Main Menu</PageTitle>
+
+<h1>Main Menu</h1>
+
+<p>This component demonstrates fetching Main Menu data from the server.</p>
+
+@if (navmenuList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@navmenuList.Length} items");
+ 
+    
+    <DataTable Data="@navmenuList" 
+               DataType="typeof(NavMenuView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditNavMenu"
+               OnAdd="@OnAddNavMenu" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  NavMenuView[]? navmenuList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        navmenuList = await remoteClient.GetFromJsonAsync<NavMenuView[]>("api/navmenu");
+        
+        Console.WriteLine($"ListTemplate: Loaded {navmenuList?.Length ?? 0} navmenu records");
+        if (navmenuList != null && navmenuList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {navmenuList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddNavMenu()
+    {
+        Navigation.NavigateTo("edit-navmenu");
+    }
+
+    async Task OnEditNavMenu(object item)
+    {
+        var navmenu = (NavMenuView)item;
+        Navigation.NavigateTo($"edit-navmenu/{navmenu.id}");
+    }
+
+}

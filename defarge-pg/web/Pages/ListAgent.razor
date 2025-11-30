@@ -1,0 +1,65 @@
+@page "/agent"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Agent</PageTitle>
+
+<h1>Agent</h1>
+
+<p>This component demonstrates fetching Agent data from the server.</p>
+
+@if (agentList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@agentList.Length} items");
+ 
+    
+    <DataTable Data="@agentList" 
+               DataType="typeof(AgentView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditAgent"
+               OnAdd="@OnAddAgent" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  AgentView[]? agentList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        agentList = await remoteClient.GetFromJsonAsync<AgentView[]>("api/agent");
+        
+        Console.WriteLine($"ListTemplate: Loaded {agentList?.Length ?? 0} agent records");
+        if (agentList != null && agentList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {agentList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddAgent()
+    {
+        Navigation.NavigateTo("edit-agent");
+    }
+
+    async Task OnEditAgent(object item)
+    {
+        var agent = (AgentView)item;
+        Navigation.NavigateTo($"edit-agent/{agent.id}");
+    }
+
+}

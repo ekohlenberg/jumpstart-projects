@@ -1,0 +1,65 @@
+@page "/scheduleworkflow"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle></PageTitle>
+
+<h1></h1>
+
+<p>This component demonstrates fetching  data from the server.</p>
+
+@if (scheduleworkflowList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@scheduleworkflowList.Length} items");
+ 
+    
+    <DataTable Data="@scheduleworkflowList" 
+               DataType="typeof(ScheduleWorkflowView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditScheduleWorkflow"
+               OnAdd="@OnAddScheduleWorkflow" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ScheduleWorkflowView[]? scheduleworkflowList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        scheduleworkflowList = await remoteClient.GetFromJsonAsync<ScheduleWorkflowView[]>("api/scheduleworkflow");
+        
+        Console.WriteLine($"ListTemplate: Loaded {scheduleworkflowList?.Length ?? 0} scheduleworkflow records");
+        if (scheduleworkflowList != null && scheduleworkflowList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {scheduleworkflowList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddScheduleWorkflow()
+    {
+        Navigation.NavigateTo("edit-scheduleworkflow");
+    }
+
+    async Task OnEditScheduleWorkflow(object item)
+    {
+        var scheduleworkflow = (ScheduleWorkflowView)item;
+        Navigation.NavigateTo($"edit-scheduleworkflow/{scheduleworkflow.id}");
+    }
+
+}

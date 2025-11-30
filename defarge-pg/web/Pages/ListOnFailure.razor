@@ -1,0 +1,65 @@
+@page "/onfailure"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>On Failure Code</PageTitle>
+
+<h1>On Failure Code</h1>
+
+<p>This component demonstrates fetching On Failure Code data from the server.</p>
+
+@if (onfailureList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@onfailureList.Length} items");
+ 
+    
+    <DataTable Data="@onfailureList" 
+               DataType="typeof(OnFailureView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditOnFailure"
+               OnAdd="@OnAddOnFailure" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  OnFailureView[]? onfailureList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        onfailureList = await remoteClient.GetFromJsonAsync<OnFailureView[]>("api/onfailure");
+        
+        Console.WriteLine($"ListTemplate: Loaded {onfailureList?.Length ?? 0} onfailure records");
+        if (onfailureList != null && onfailureList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {onfailureList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddOnFailure()
+    {
+        Navigation.NavigateTo("edit-onfailure");
+    }
+
+    async Task OnEditOnFailure(object item)
+    {
+        var onfailure = (OnFailureView)item;
+        Navigation.NavigateTo($"edit-onfailure/{onfailure.id}");
+    }
+
+}

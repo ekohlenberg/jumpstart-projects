@@ -1,0 +1,65 @@
+@page "/oprole"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Operation Role</PageTitle>
+
+<h1>Operation Role</h1>
+
+<p>This component demonstrates fetching Operation Role data from the server.</p>
+
+@if (oproleList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@oproleList.Length} items");
+ 
+    
+    <DataTable Data="@oproleList" 
+               DataType="typeof(OpRoleView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditOpRole"
+               OnAdd="@OnAddOpRole" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  OpRoleView[]? oproleList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        oproleList = await remoteClient.GetFromJsonAsync<OpRoleView[]>("api/oprole");
+        
+        Console.WriteLine($"ListTemplate: Loaded {oproleList?.Length ?? 0} oprole records");
+        if (oproleList != null && oproleList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {oproleList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddOpRole()
+    {
+        Navigation.NavigateTo("edit-oprole");
+    }
+
+    async Task OnEditOpRole(object item)
+    {
+        var oprole = (OpRoleView)item;
+        Navigation.NavigateTo($"edit-oprole/{oprole.id}");
+    }
+
+}

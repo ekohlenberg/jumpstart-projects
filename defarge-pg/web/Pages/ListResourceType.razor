@@ -1,0 +1,65 @@
+@page "/resourcetype"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Resource Type</PageTitle>
+
+<h1>Resource Type</h1>
+
+<p>This component demonstrates fetching Resource Type data from the server.</p>
+
+@if (resourcetypeList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@resourcetypeList.Length} items");
+ 
+    
+    <DataTable Data="@resourcetypeList" 
+               DataType="typeof(ResourceTypeView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditResourceType"
+               OnAdd="@OnAddResourceType" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ResourceTypeView[]? resourcetypeList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        resourcetypeList = await remoteClient.GetFromJsonAsync<ResourceTypeView[]>("api/resourcetype");
+        
+        Console.WriteLine($"ListTemplate: Loaded {resourcetypeList?.Length ?? 0} resourcetype records");
+        if (resourcetypeList != null && resourcetypeList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {resourcetypeList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddResourceType()
+    {
+        Navigation.NavigateTo("edit-resourcetype");
+    }
+
+    async Task OnEditResourceType(object item)
+    {
+        var resourcetype = (ResourceTypeView)item;
+        Navigation.NavigateTo($"edit-resourcetype/{resourcetype.id}");
+    }
+
+}

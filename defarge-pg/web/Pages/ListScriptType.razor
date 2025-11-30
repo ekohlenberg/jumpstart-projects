@@ -1,0 +1,65 @@
+@page "/scripttype"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Script Type</PageTitle>
+
+<h1>Script Type</h1>
+
+<p>This component demonstrates fetching Script Type data from the server.</p>
+
+@if (scripttypeList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@scripttypeList.Length} items");
+ 
+    
+    <DataTable Data="@scripttypeList" 
+               DataType="typeof(ScriptTypeView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditScriptType"
+               OnAdd="@OnAddScriptType" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ScriptTypeView[]? scripttypeList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        scripttypeList = await remoteClient.GetFromJsonAsync<ScriptTypeView[]>("api/scripttype");
+        
+        Console.WriteLine($"ListTemplate: Loaded {scripttypeList?.Length ?? 0} scripttype records");
+        if (scripttypeList != null && scripttypeList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {scripttypeList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddScriptType()
+    {
+        Navigation.NavigateTo("edit-scripttype");
+    }
+
+    async Task OnEditScriptType(object item)
+    {
+        var scripttype = (ScriptTypeView)item;
+        Navigation.NavigateTo($"edit-scripttype/{scripttype.id}");
+    }
+
+}

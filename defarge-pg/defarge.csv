@@ -1,0 +1,38 @@
+﻿TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,TABLE_LABEL,NAV_MENU,COLUMN_NAME,COLUMN_LABEL,FK_TYPE,FK_TABLE,TEST_DATA_SET,ORDINAL_POSITION,COLUMN_DEFAULT,RWK,IS_NULLABLE,DATA_TYPE,MSSQL_DATA_TYPE,CHARACTER_MAXIMUM_LENGTH
+defarge,app,resource,Resource,Metrics,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,resource,Resource,,name,Name,,,,2,,1,NO,VARCHAR,,255
+defarge,app,resource,Resource,,resource_type_id,Resource Type,enum,resource_type,,3,,1,NO,BIGINT,,
+defarge,app,resource,Resource,,internal_org_id,Internal Organization,enum,org,,3,,1,NO,BIGINT,,
+defarge,app,resource,Resource,,external_org_id,External Organization,enum,org,,3,,1,NO,BIGINT,,
+defarge,app,resource,Resource,,ip_address,Address,,,,4,,,NO,VARCHAR,,255
+defarge,app,resource,Resource,,description,Description,,,,5,,,NO,VARCHAR,,255
+defarge,app,metric,Metric,Metrics,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,metric,Metric,,name,Name,,,,2,,1,NO,VARCHAR,,255
+defarge,app,metric,Metric,,category_id,Category,enum,category,,3,,1,NO,BIGINT,,
+defarge,app,metric,Metric,,uom_id,Unit,enum,uom,,4,,,NO,BIGINT,,
+defarge,app,metric_resource_map,Metric Resource Map,,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,metric_resource_map,Metric Resource Map,,resource_id,Resource,parent,Resource,,2,,1,NO,BIGINT,,
+defarge,app,metric_resource_map,Metric Resource Map,,metric_id,Metric,map,Metric,,3,,1,NO,BIGINT,,
+defarge,app,metric_event,Metric Event,Activity,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,metric_event,Metric Event,,metric_id,Metric,parent,Metric,,2,,1,NO,BIGINT,,
+defarge,app,metric_event,Metric Event,,event_time,Event Time,,,,3,,1,NO,TIMESTAMP,,
+defarge,app,metric_event,Metric Event,,value,Value,,,,4,,,NO,"NUMERIC(18,4)",,
+defarge,app,alert_rule,Alert Rule,Metrics,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,alert_rule,Alert Rule,,metric_id,Metric,parent,Metric,,2,,1,NO,BIGINT,,
+defarge,app,alert_rule,Alert Rule,,name,Name,,,,3,,1,NO,VARCHAR,,255
+defarge,app,alert_rule,Alert Rule,,condition,Condition,,,,4,,1,NO,VARCHAR,,255
+defarge,app,alert_rule,Alert Rule,,threshold,Threshold,,,,5,,,NO,"NUMERIC(18,4)",,
+defarge,app,alert_rule,Alert Rule,,recipients,Recipients,,,,6,,,NO,VARCHAR,,255
+defarge,app,alert,Alert,Activity,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,alert,Alert,,alert_rule_id,Alert,map,alert_rule,,2,,1,NO,BIGINT,,
+defarge,app,alert,Alert,,metric_event_id,Metric,map,metric_event,,3,,1,NO,BIGINT,,
+defarge,app,alert,Alert,,triggered_at,Triggered,,,,4,,1,NO,TIMESTAMP,,
+defarge,app,alert,Alert,,resolved_at,Resolved,,,,5,,,NO,TIMESTAMP,,
+defarge,app,alert,Alert,,status,Status,,,,6,,,NO,VARCHAR,,
+defarge,app,category,Category,Metrics,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,category,Category,,parent_id,Parent Category,parent,Category,,2,,1,YES,BIGINT,,
+defarge,app,category,Category,,name,Name,,,,3,,1,NO,VARCHAR,,255
+defarge,app,uom,Unit of Measure,,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,uom,Unit of Measure,,name,Name,,,,2,,1,NO,VARCHAR,,255
+defarge,app,resource_type,Resource Type,Metrics,id,ID,,,,1,,,NO,BIGINT,,
+defarge,app,resource_type,Resource Type,,name,Name,,,,2,,1,NO,VARCHAR,,255

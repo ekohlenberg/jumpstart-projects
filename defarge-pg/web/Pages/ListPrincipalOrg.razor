@@ -1,0 +1,65 @@
+@page "/principalorg"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Principals</PageTitle>
+
+<h1>Principals</h1>
+
+<p>This component demonstrates fetching Principals data from the server.</p>
+
+@if (principalorgList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@principalorgList.Length} items");
+ 
+    
+    <DataTable Data="@principalorgList" 
+               DataType="typeof(PrincipalOrgView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditPrincipalOrg"
+               OnAdd="@OnAddPrincipalOrg" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  PrincipalOrgView[]? principalorgList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        principalorgList = await remoteClient.GetFromJsonAsync<PrincipalOrgView[]>("api/principalorg");
+        
+        Console.WriteLine($"ListTemplate: Loaded {principalorgList?.Length ?? 0} principalorg records");
+        if (principalorgList != null && principalorgList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {principalorgList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddPrincipalOrg()
+    {
+        Navigation.NavigateTo("edit-principalorg");
+    }
+
+    async Task OnEditPrincipalOrg(object item)
+    {
+        var principalorg = (PrincipalOrgView)item;
+        Navigation.NavigateTo($"edit-principalorg/{principalorg.id}");
+    }
+
+}

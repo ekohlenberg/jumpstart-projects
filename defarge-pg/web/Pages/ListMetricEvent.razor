@@ -1,0 +1,65 @@
+@page "/metricevent"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Metric Event</PageTitle>
+
+<h1>Metric Event</h1>
+
+<p>This component demonstrates fetching Metric Event data from the server.</p>
+
+@if (metriceventList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@metriceventList.Length} items");
+ 
+    
+    <DataTable Data="@metriceventList" 
+               DataType="typeof(MetricEventView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditMetricEvent"
+               OnAdd="@OnAddMetricEvent" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  MetricEventView[]? metriceventList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        metriceventList = await remoteClient.GetFromJsonAsync<MetricEventView[]>("api/metricevent");
+        
+        Console.WriteLine($"ListTemplate: Loaded {metriceventList?.Length ?? 0} metricevent records");
+        if (metriceventList != null && metriceventList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {metriceventList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddMetricEvent()
+    {
+        Navigation.NavigateTo("edit-metricevent");
+    }
+
+    async Task OnEditMetricEvent(object item)
+    {
+        var metricevent = (MetricEventView)item;
+        Navigation.NavigateTo($"edit-metricevent/{metricevent.id}");
+    }
+
+}

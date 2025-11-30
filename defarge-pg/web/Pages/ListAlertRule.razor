@@ -1,0 +1,65 @@
+@page "/alertrule"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Alert Rule</PageTitle>
+
+<h1>Alert Rule</h1>
+
+<p>This component demonstrates fetching Alert Rule data from the server.</p>
+
+@if (alertruleList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@alertruleList.Length} items");
+ 
+    
+    <DataTable Data="@alertruleList" 
+               DataType="typeof(AlertRuleView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditAlertRule"
+               OnAdd="@OnAddAlertRule" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  AlertRuleView[]? alertruleList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        alertruleList = await remoteClient.GetFromJsonAsync<AlertRuleView[]>("api/alertrule");
+        
+        Console.WriteLine($"ListTemplate: Loaded {alertruleList?.Length ?? 0} alertrule records");
+        if (alertruleList != null && alertruleList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {alertruleList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddAlertRule()
+    {
+        Navigation.NavigateTo("edit-alertrule");
+    }
+
+    async Task OnEditAlertRule(object item)
+    {
+        var alertrule = (AlertRuleView)item;
+        Navigation.NavigateTo($"edit-alertrule/{alertrule.id}");
+    }
+
+}

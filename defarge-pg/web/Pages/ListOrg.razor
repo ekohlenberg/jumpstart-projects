@@ -1,0 +1,65 @@
+@page "/org"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Organization</PageTitle>
+
+<h1>Organization</h1>
+
+<p>This component demonstrates fetching Organization data from the server.</p>
+
+@if (orgList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@orgList.Length} items");
+ 
+    
+    <DataTable Data="@orgList" 
+               DataType="typeof(OrgView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditOrg"
+               OnAdd="@OnAddOrg" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  OrgView[]? orgList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        orgList = await remoteClient.GetFromJsonAsync<OrgView[]>("api/org");
+        
+        Console.WriteLine($"ListTemplate: Loaded {orgList?.Length ?? 0} org records");
+        if (orgList != null && orgList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {orgList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddOrg()
+    {
+        Navigation.NavigateTo("edit-org");
+    }
+
+    async Task OnEditOrg(object item)
+    {
+        var org = (OrgView)item;
+        Navigation.NavigateTo($"edit-org/{org.id}");
+    }
+
+}

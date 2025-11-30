@@ -1,0 +1,65 @@
+@page "/metric"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Metric</PageTitle>
+
+<h1>Metric</h1>
+
+<p>This component demonstrates fetching Metric data from the server.</p>
+
+@if (metricList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@metricList.Length} items");
+ 
+    
+    <DataTable Data="@metricList" 
+               DataType="typeof(MetricView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditMetric"
+               OnAdd="@OnAddMetric" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  MetricView[]? metricList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        metricList = await remoteClient.GetFromJsonAsync<MetricView[]>("api/metric");
+        
+        Console.WriteLine($"ListTemplate: Loaded {metricList?.Length ?? 0} metric records");
+        if (metricList != null && metricList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {metricList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddMetric()
+    {
+        Navigation.NavigateTo("edit-metric");
+    }
+
+    async Task OnEditMetric(object item)
+    {
+        var metric = (MetricView)item;
+        Navigation.NavigateTo($"edit-metric/{metric.id}");
+    }
+
+}

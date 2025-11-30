@@ -1,0 +1,65 @@
+@page "/operation"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Operations</PageTitle>
+
+<h1>Operations</h1>
+
+<p>This component demonstrates fetching Operations data from the server.</p>
+
+@if (operationList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@operationList.Length} items");
+ 
+    
+    <DataTable Data="@operationList" 
+               DataType="typeof(OperationView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditOperation"
+               OnAdd="@OnAddOperation" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  OperationView[]? operationList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        operationList = await remoteClient.GetFromJsonAsync<OperationView[]>("api/operation");
+        
+        Console.WriteLine($"ListTemplate: Loaded {operationList?.Length ?? 0} operation records");
+        if (operationList != null && operationList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {operationList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddOperation()
+    {
+        Navigation.NavigateTo("edit-operation");
+    }
+
+    async Task OnEditOperation(object item)
+    {
+        var operation = (OperationView)item;
+        Navigation.NavigateTo($"edit-operation/{operation.id}");
+    }
+
+}

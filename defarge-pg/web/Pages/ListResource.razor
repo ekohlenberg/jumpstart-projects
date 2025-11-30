@@ -1,0 +1,65 @@
+@page "/resource"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Resource</PageTitle>
+
+<h1>Resource</h1>
+
+<p>This component demonstrates fetching Resource data from the server.</p>
+
+@if (resourceList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@resourceList.Length} items");
+ 
+    
+    <DataTable Data="@resourceList" 
+               DataType="typeof(ResourceView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditResource"
+               OnAdd="@OnAddResource" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ResourceView[]? resourceList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        resourceList = await remoteClient.GetFromJsonAsync<ResourceView[]>("api/resource");
+        
+        Console.WriteLine($"ListTemplate: Loaded {resourceList?.Length ?? 0} resource records");
+        if (resourceList != null && resourceList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {resourceList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddResource()
+    {
+        Navigation.NavigateTo("edit-resource");
+    }
+
+    async Task OnEditResource(object item)
+    {
+        var resource = (ResourceView)item;
+        Navigation.NavigateTo($"edit-resource/{resource.id}");
+    }
+
+}
