@@ -1,14 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Text.Json;
+using System.Collections.Generic;
 
 namespace defarge
 {
     /// <summary>
-    /// PowerShell script provider that executes PowerShell scripts with access to .NET APIs
+    /// PowerShell script provider that executes PowerShell scripts via system call
     /// </summary>
     public class PowerShellProvider : IScriptProvider
     {
@@ -29,97 +29,151 @@ namespace defarge
                 throw new ArgumentNullException(nameof(context));
             }
 
+            string tempScriptFile = null;
+            string tempContextFile = null;
+
             try
             {
                 // Clear any previous exception
                 context.ScriptException = null;
 
-                // Create a runspace with access to .NET assemblies
-                var initialState = InitialSessionState.CreateDefault();
+                // Create temporary script file
+                tempScriptFile = Path.GetTempFileName();
+                tempScriptFile = Path.ChangeExtension(tempScriptFile, ".ps1");
                 
-                // Add all currently loaded assemblies to the runspace
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                // Create temporary context file (JSON) to pass ScriptContext to PowerShell
+                tempContextFile = Path.GetTempFileName();
+                tempContextFile = Path.ChangeExtension(tempContextFile, ".json");
+                
+                // Serialize ScriptContext to JSON
+                var contextData = new Dictionary<string, object>
                 {
+                    { "ScriptResult", context.ScriptResult },
+                    { "retCode", context.retCode },
+                    { "Args", context.Args ?? new Dictionary<string, object>() }
+                };
+                
+                // Add Transaction as a dictionary if it exists
+                if (context.Transaction != null)
+                {
+                    var transactionDict = new Dictionary<string, object>();
+                    foreach (var kvp in context.Transaction)
+                    {
+                        transactionDict[kvp.Key] = kvp.Value;
+                    }
+                    contextData["Transaction"] = transactionDict;
+                }
+                
+                var contextJson = JsonSerializer.Serialize(contextData);
+                // Use UTF-8 without BOM to avoid PowerShell JSON parsing issues
+                File.WriteAllText(tempContextFile, contextJson, new UTF8Encoding(false));
+
+                // Create PowerShell script that loads context and executes user script
+                var contextFileEscaped = tempContextFile.Replace("'", "''").Replace("\\", "\\\\");
+                var powershellScript = "# Load ScriptContext from JSON file\n" +
+                    "$contextFile = '" + contextFileEscaped + "'\n" +
+                    "try {\n" +
+                    "    $contextJson = Get-Content -Path $contextFile -Raw -Encoding UTF8\n" +
+                    "    $contextData = $contextJson | ConvertFrom-Json\n" +
+                    "    # Make context available as global variable\n" +
+                    "    $global:ScriptContext = $contextData\n" +
+                    "    $global:Context = $contextData\n" +
+                    "} catch {\n" +
+                    "    Write-Error \"Error loading context: $_\"\n" +
+                    "    exit 1\n" +
+                    "}\n" +
+                    "\n" +
+                    "# User's script code\n" +
+                    sourceCode;
+
+                // Write the complete PowerShell script to the temp file
+                // Use UTF-8 without BOM for consistency
+                File.WriteAllText(tempScriptFile, powershellScript, new UTF8Encoding(false));
+
+                // Execute PowerShell script
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{tempScriptFile}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    StandardErrorEncoding = Encoding.UTF8
+                };
+
+                string stdout = string.Empty;
+                string stderr = string.Empty;
+                int exitCode = 0;
+                Exception processException = null;
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    
+                    // Capture output
+                    var outputBuilder = new StringBuilder();
+                    var errorBuilder = new StringBuilder();
+                    
+                    // Hook stdout with delegate to write to Console
+                    process.OutputDataReceived += (sender, e) =>
+                    {
+                        if (!string.IsNullOrEmpty(e.Data))
+                        {
+                            Console.WriteLine(e.Data);
+                            outputBuilder.AppendLine(e.Data);
+                        }
+                    };
+                    
+                    // Hook stderr with delegate to write to Console
+                    process.ErrorDataReceived += (sender, e) =>
+                    {
+                        if (!string.IsNullOrEmpty(e.Data))
+                        {
+                            Console.Error.WriteLine(e.Data);
+                            errorBuilder.AppendLine(e.Data);
+                        }
+                    };
+
                     try
                     {
-                        if (!assembly.IsDynamic && !string.IsNullOrEmpty(assembly.Location))
-                        {
-                            // Add assembly using SessionStateAssemblyEntry
-                            initialState.Assemblies.Add(new SessionStateAssemblyEntry(assembly.FullName));
-                        }
+                        process.Start();
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();
+                        process.WaitForExit();
+                        exitCode = process.ExitCode;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Skip assemblies that can't be imported
+                        processException = ex;
                     }
+
+                    stdout = outputBuilder.ToString();
+                    stderr = errorBuilder.ToString();
                 }
 
-                // Create runspace
-                using (var runspace = RunspaceFactory.CreateRunspace(initialState))
+                // Check for process start errors
+                if (processException != null)
                 {
-                    runspace.Open();
+                    throw new Exception($"Failed to start PowerShell. Make sure PowerShell is installed and in PATH. Error: {processException.Message}", processException);
+                }
 
-                    // Set the ScriptContext as a variable in the PowerShell session
-                    runspace.SessionStateProxy.SetVariable("ScriptContext", context);
-                    runspace.SessionStateProxy.SetVariable("Context", context);
-
-                    // Use PowerShell class for better error handling
-                    using (var powershell = PowerShell.Create())
+                // Check for script execution errors
+                if (exitCode != 0 || !string.IsNullOrEmpty(stderr))
+                {
+                    var errorMessage = $"PowerShell script exited with code {exitCode}";
+                    if (!string.IsNullOrEmpty(stderr))
                     {
-                        powershell.Runspace = runspace;
-                        powershell.AddScript(sourceCode);
-
-                        // Execute the script and capture output/errors
-                        Collection<PSObject> results;
-                        try
-                        {
-                            results = powershell.Invoke();
-                        }
-                        catch (RuntimeException psEx)
-                        {
-                            // PowerShell terminating error
-                            throw new Exception($"PowerShell script execution failed: {psEx.Message}", psEx);
-                        }
-
-                        // Check for errors in the PowerShell streams
-                        var errors = powershell.Streams.Error;
-                        
-                        // Collect output
-                        var output = new StringBuilder();
-                        foreach (var result in results)
-                        {
-                            if (result != null)
-                            {
-                                output.AppendLine(result.ToString());
-                            }
-                        }
-
-                        // Check for errors
-                        if (errors != null && errors.Count > 0)
-                        {
-                            var errorMessages = new StringBuilder();
-                            foreach (var errorRecord in errors)
-                            {
-                                errorMessages.AppendLine(errorRecord.ToString());
-                                // If it's a terminating error, throw it
-                                if (errorRecord.Exception != null)
-                                {
-                                    throw new Exception($"PowerShell script execution error: {errorRecord.Exception.Message}", errorRecord.Exception);
-                                }
-                            }
-                            // If we have errors but no exceptions, still throw
-                            if (errorMessages.Length > 0)
-                            {
-                                throw new Exception($"PowerShell script execution errors: {errorMessages}");
-                            }
-                        }
-
-                        // Store output in context if available
-                        if (output.Length > 0)
-                        {
-                            context.ScriptResult = output.ToString();
-                        }
+                        errorMessage += $"\nError output:\n{stderr}";
                     }
+                    throw new Exception(errorMessage);
+                }
+
+                // Store output in context
+                if (!string.IsNullOrEmpty(stdout))
+                {
+                    context.ScriptResult = stdout;
                 }
             }
             catch (Exception ex)
@@ -128,6 +182,27 @@ namespace defarge
                 context.ScriptException = ex;
                 Logger.Error($"Exception thrown in PowerShell script: {ex.Message}", ex);
                 throw;
+            }
+            finally
+            {
+                // Clean up temporary files
+                try
+                {
+                    if (tempScriptFile != null && File.Exists(tempScriptFile))
+                    {
+                        File.Delete(tempScriptFile);
+                    }
+                }
+                catch { }
+
+                try
+                {
+                    if (tempContextFile != null && File.Exists(tempContextFile))
+                    {
+                        File.Delete(tempContextFile);
+                    }
+                }
+                catch { }
             }
         }
     }
