@@ -1,72 +1,62 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
+using defarge;
 
-namespace defarge.core
+namespace defarge
 {
     /// <summary>
     /// Interface for Scheduler logic operations
     /// </summary>
-    public interface ISchedulerLogic
+    public interface ISchedulerCoreLogic: ISchedulerLogic
     {
         // Job Management Operations
-        void schedule(long workflowId);
+       
         void execute(long workflowId);
         void cancel(long workflowId);
-        void pause(long workflowId);
-        void resume(long workflowId);
-        void retry(long workflowId);
         void abort(long workflowId);
 
         // Job Status & Monitoring Operations
         object status(long workflowId);
-        List<long> list(string status, string priority);
-        object monitor(long workflowId);
-        List<long> query(DateTime? startDate, DateTime? endDate);
+       
 
-        // Resource Management Operations
-        void allocate(long workflowId);
-        void deallocate(long workflowId);
-        void balance();
-        void scale(long workflowId);
-
-        // Dependency Management Operations
-        void wait(long workflowId);
-        void trigger(long workflowId);
-        List<long> chain(List<long> workflowIds);
-        List<long> fork(long workflowId, List<long> subWorkflowIds);
-        void join(long workflowId);
-
-        // Recurring & Batch Operations
-        void repeat(long workflowId);
-        List<long> batch(List<long> workflowIds);
-        void queue(long workflowId);
-        void prioritize(long workflowId, int priority);
+        
+     
 
         // System Management Operations
         long register(Scheduler scheduler);
         void unregister(long workflowId);
-        object health();
-        void recover();
-        void migrate(long workflowId, string targetAgent);
+       
 
-        // Configuration Operations
-        void configure(long workflowId);
-        void update(long workflowId, object updateData);
-        object validate(long workflowId);
-
-        // Standard Operations
-        List<long> select();
-        object get(long workflowId);
-        long insert(object workflowDefinition);
-        void delete(long workflowId);
+      
     }
 
-    public partial class SchedulerLogic : ISchedulerLogic
+    public partial class SchedulerCoreLogic : SchedulerLogic, ISchedulerCoreLogic
     {
         private static Scheduler _thisScheduler;
+        private static readonly ConcurrentQueue<long> _workflowQueue = new ConcurrentQueue<long>();
+        private static readonly ManualResetEventSlim _queueEvent = new ManualResetEventSlim(false);
+        private static Thread _dispatcherThread;
+        private static bool _dispatcherRunning = false;
+        private static readonly object _dispatcherLock = new object();
+
+
+        public static new ISchedulerCoreLogic Create()
+        {
+            var schedulerLogic = new SchedulerCoreLogic();
+
+            var proxy = DispatchProxy.Create<ISchedulerCoreLogic, Proxy<ISchedulerCoreLogic>>();
+            ((Proxy<ISchedulerCoreLogic>)proxy).Initialize();
+            ((Proxy<ISchedulerCoreLogic>)proxy).Target = schedulerLogic;
+            ((Proxy<ISchedulerCoreLogic>)proxy).DomainObj = "Scheduler";
+
+            return proxy;
+        }
+
 
         public static Scheduler ThisScheduler
         {
@@ -82,6 +72,67 @@ namespace defarge.core
         {
             _thisScheduler = scheduler;
             Console.WriteLine($"SchedulerLogic: Set singleton Scheduler instance (ID: {scheduler?.id})");
+            StartDispatcherThread();
+        }
+
+        /// <summary>
+        /// Starts the dispatcher thread if not already running
+        /// </summary>
+        private static void StartDispatcherThread()
+        {
+            lock (_dispatcherLock)
+            {
+                if (!_dispatcherRunning)
+                {
+                    _dispatcherRunning = true;
+                    _dispatcherThread = new Thread(DispatcherThreadProc)
+                    {
+                        Name = "SchedulerDispatcher",
+                        IsBackground = false
+                    };
+                    _dispatcherThread.Start();
+                    Console.WriteLine("SchedulerLogic: Dispatcher thread started");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Dispatcher thread procedure that processes workflows from the queue
+        /// </summary>
+        private static void DispatcherThreadProc()
+        {
+            Console.WriteLine("SchedulerLogic: Dispatcher thread started");
+            while (_dispatcherRunning)
+            {
+                try
+                {
+                    // Wait for workflow to be enqueued or timeout
+                    if (_queueEvent.Wait(TimeSpan.FromSeconds(1)))
+                    {
+                        _queueEvent.Reset();
+                    }
+
+                    // Process all workflows in the queue
+                    while (_workflowQueue.TryDequeue(out long workflowId))
+                    {
+                        try
+                        {
+                            Console.WriteLine($"SchedulerLogic: Processing workflow {workflowId}");
+                            ExecuteWorkflowInternal(workflowId);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error($"SchedulerLogic: Error processing workflow {workflowId}: {ex.Message}", ex);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"SchedulerLogic: Error in dispatcher thread: {ex.Message}", ex);
+                    Thread.Sleep(1000); // Wait before retrying
+                }
+            }
+            Console.WriteLine("SchedulerLogic: Dispatcher thread stopped");
         }
 
         /// <summary>
@@ -97,56 +148,204 @@ namespace defarge.core
             return scheduler.id;
         }
 
-        public static ISchedulerLogic Create()
-        {
-            var schedulerLogic = new SchedulerLogic();
-
-            var proxy = DispatchProxy.Create<ISchedulerLogic, Proxy<ISchedulerLogic>>();
-            ((Proxy<ISchedulerLogic>)proxy).Initialize();
-            ((Proxy<ISchedulerLogic>)proxy).Target = schedulerLogic;
-            ((Proxy<ISchedulerLogic>)proxy).DomainObj = "Scheduler";
-
-            return proxy;
-        }
-
+     
         // =====================================
         // Job Management Operations
         // =====================================
 
-        public void schedule(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: schedule - {workflowId}");
-            // TODO: Implement schedule logic
-        }
-
         public void execute(long workflowId)
         {
             Console.WriteLine($"SchedulerLogic: execute - {workflowId}");
-            // TODO: Implement execute logic
+            
+            // Ensure dispatcher thread is running
+            StartDispatcherThread();
+            
+            // Enqueue workflow ID for processing
+            _workflowQueue.Enqueue(workflowId);
+            _queueEvent.Set();
+            
+            Console.WriteLine($"SchedulerLogic: Workflow {workflowId} enqueued for execution");
+        }
+
+        /// <summary>
+        /// Internal method that executes a workflow by building the execution tree and running workflow_process nodes
+        /// </summary>
+        /// <param name="workflowId">The workflow ID to execute</param>
+        private static void ExecuteWorkflowInternal(long workflowId)
+        {
+            try
+            {
+                // Load the workflow
+                Workflow workflow = new Workflow();
+                workflow.id = workflowId;
+                DBPersist.get(workflow, "default");
+                
+                if (workflow == null || workflow.id == 0)
+                {
+                    throw new Exception($"Workflow {workflowId} not found");
+                }
+
+                Console.WriteLine($"SchedulerLogic: Executing workflow {workflowId} - {workflow.name}");
+
+                // Build execution tree: collect all workflow_process nodes recursively
+                List<WorkflowProcess> allWorkflowProcesses = new List<WorkflowProcess>();
+                CollectWorkflowProcesses(workflowId, allWorkflowProcesses);
+
+                if (allWorkflowProcesses.Count == 0)
+                {
+                    Console.WriteLine($"SchedulerLogic: No workflow_process nodes found for workflow {workflowId}");
+                    return;
+                }
+
+                // Group by sequence and sort
+                var processesBySequence = allWorkflowProcesses          
+                    .GroupBy(wp => wp.seq)
+                    .OrderBy(g => g.Key)
+                    .ToList();
+
+                // Execute each sequence group
+                foreach (var sequenceGroup in processesBySequence)
+                {
+                    int seq = sequenceGroup.Key;
+                    var processes = sequenceGroup.ToList();
+                    
+                    Console.WriteLine($"SchedulerLogic: Executing sequence {seq} with {processes.Count} processes");
+
+                    // Execute all processes in this sequence concurrently
+                    List<Task> tasks = new List<Task>();
+                    foreach (var workflowProcess in processes)
+                    {
+                        tasks.Add(Task.Run(async () =>
+                        {
+                            try
+                            {
+                                await ExecuteWorkflowProcessAsync(workflowProcess);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Error($"SchedulerLogic: Error executing workflow_process {workflowProcess.id}: {ex.Message}", ex);
+                                
+                                // Handle failure based on on_failure_action_id
+                                if (workflowProcess.on_failure_action_id == (long)WorkflowProcess.OnFailureAction.Stop)
+                                {
+                                    throw; // Re-throw to stop execution
+                                }
+                                // Otherwise continue (OnFailureAction.Continue)
+                            }
+                        }));
+                    }
+
+                    // Wait for all processes in this sequence to complete
+                    Task.WaitAll(tasks.ToArray());
+                    
+                    Console.WriteLine($"SchedulerLogic: Sequence {seq} completed");
+                }
+
+                Console.WriteLine($"SchedulerLogic: Workflow {workflowId} execution completed");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"SchedulerLogic: Error executing workflow {workflowId}: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Recursively collects all workflow_process nodes from a workflow and its child workflows
+        /// </summary>
+        /// <param name="workflowId">The workflow ID to collect from</param>
+        /// <param name="workflowProcesses">List to collect workflow_process nodes into</param>
+        private static void CollectWorkflowProcesses(long workflowId, List<WorkflowProcess> workflowProcesses)
+        {
+            // Get all workflow_process nodes for this workflow
+            List<WorkflowProcess> processes = new List<WorkflowProcess>();
+            void WorkflowProcessSelectCallback(System.Data.Common.DbDataReader rdr)
+            {
+                var wp = new WorkflowProcess();
+                DBPersist.autoAssign(rdr, wp);
+                processes.Add(wp);
+            }
+            DBPersist.select(WorkflowProcessSelectCallback, 
+                $"SELECT * FROM core.workflow_process WHERE workflow_id = {workflowId}");
+
+            // Add leaf nodes (workflow_process) to the list
+            workflowProcesses.AddRange(processes);
+
+            // Get child workflows (recursive structure)
+            List<Workflow> childWorkflows = new List<Workflow>();
+            void WorkflowSelectCallback(System.Data.Common.DbDataReader rdr)
+            {
+                var wf = new Workflow();
+                DBPersist.autoAssign(rdr, wf);
+                childWorkflows.Add(wf);
+            }
+            DBPersist.select(WorkflowSelectCallback, 
+                $"SELECT * FROM core.workflow WHERE parent_workflow_id = {workflowId}");
+
+            // Recursively collect from child workflows
+            foreach (var childWorkflow in childWorkflows)
+            {
+                CollectWorkflowProcesses(childWorkflow.id, workflowProcesses);
+            }
+        }
+
+        /// <summary>
+        /// Executes a single workflow_process by creating an Execution and invoking the agent
+        /// </summary>
+        /// <param name="workflowProcess">The workflow_process to execute</param>
+        private static async Task ExecuteWorkflowProcessAsync(WorkflowProcess workflowProcess)
+        {
+            try
+            {
+                Console.WriteLine($"SchedulerLogic: Executing workflow_process {workflowProcess.id}");
+
+                // Load process to get script_id
+                Process process = new Process();
+                process.id = workflowProcess.process_id;
+                DBPersist.get(process, "default");
+
+                if (process == null || process.id == 0)
+                {
+                    throw new Exception($"Process {workflowProcess.process_id} not found");
+                }
+
+                // Load agent
+                Agent agent = new Agent();
+                agent.id = workflowProcess.agent_id;
+                DBPersist.get(agent, "default");
+
+                if (agent == null || agent.id == 0)
+                {
+                    throw new Exception($"Agent {workflowProcess.agent_id} not found");
+                }
+
+                // Create execution record
+                Execution execution = new Execution();
+                execution.workflow_process_id = workflowProcess.id;
+                execution.exec_status_id = (long)Execution.ExecStatus.Dispatched;
+                DBPersist.insert(execution, "default");
+
+                Console.WriteLine($"SchedulerLogic: Created execution {execution.id} for workflow_process {workflowProcess.id}");
+
+                // Invoke agent via AgentClient
+                using (var agentClient = new AgentClient(agent))
+                {
+                    // Use ExecuteAsync to send execution to agent
+                    long executionResult = await agentClient.ExecuteAsync(execution.id);
+                    Console.WriteLine($"SchedulerLogic: Agent {agent.id} accepted execution {execution.id}, result: {executionResult}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"SchedulerLogic: Error executing workflow_process {workflowProcess.id}: {ex.Message}", ex);
+                throw;
+            }
         }
 
         public void cancel(long workflowId)
         {
             Console.WriteLine($"SchedulerLogic: cancel - ID={workflowId}");
             // TODO: Implement cancel logic
-        }
-
-        public void pause(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: pause - ID={workflowId}");
-            // TODO: Implement pause logic
-        }
-
-        public void resume(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: resume - ID={workflowId}");
-            // TODO: Implement resume logic
-        }
-
-        public void retry(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: retry - ID={workflowId}");
-            // TODO: Implement retry logic
         }
 
         public void abort(long workflowId)
@@ -166,204 +365,14 @@ namespace defarge.core
             return new { workflowId, status = "unknown" };
         }
 
-        public List<long> list(string status, string priority)
-        {
-            Console.WriteLine($"SchedulerLogic: list - status={status}, priority={priority}");
-            // TODO: Implement list logic
-            return new List<long>();
-        }
-
-        public object monitor(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: monitor - ID={workflowId}");
-            // TODO: Implement monitor logic
-            return new { workflowId, status = "unknown" };
-        }
-
-        public List<long> query(DateTime? startDate, DateTime? endDate)
-        {
-            Console.WriteLine($"SchedulerLogic: query - startDate={startDate}, endDate={endDate}");
-            // TODO: Implement query logic
-            return new List<long>();
-        }
-
-        // =====================================
-        // Resource Management Operations
-        // =====================================
-
-        public void allocate(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: allocate - workflowId={workflowId}");
-            // TODO: Implement allocate logic
-        }
-
-        public void deallocate(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: deallocate - ID={workflowId}");
-            // TODO: Implement deallocate logic
-        }
-
-        public void balance()
-        {
-            Console.WriteLine($"SchedulerLogic: balance");
-            // TODO: Implement balance logic
-        }
-
-        public void scale(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: scale - workflowId={workflowId}");
-            // TODO: Implement scale logic
-        }
-
-        // =====================================
-        // Dependency Management Operations
-        // =====================================
-
-        public void wait(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: wait - workflowId={workflowId}");
-            // TODO: Implement wait logic
-        }
-
-        public void trigger(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: trigger - ID={workflowId}");
-            // TODO: Implement trigger logic
-        }
-
-        public List<long> chain(List<long> workflowIds)
-        {
-            Console.WriteLine($"SchedulerLogic: chain - {workflowIds.Count} jobs");
-            // TODO: Implement chain logic
-            return workflowIds;
-        }
-
-        public List<long> fork(long workflowId, List<long> subWorkflowIds)
-        {
-            Console.WriteLine($"SchedulerLogic: fork - ID={workflowId}, {subWorkflowIds.Count} sub-jobs");
-            // TODO: Implement fork logic
-            return subWorkflowIds;
-        }
-
-        public void join(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: join - ID={workflowId}");
-            // TODO: Implement join logic
-        }
-
-        // =====================================
-        // Recurring & Batch Operations
-        // =====================================
-
-        public void repeat(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: repeat - workflowId={workflowId}");
-            // TODO: Implement repeat logic
-        }
-
-        public List<long> batch(List<long> workflowIds)
-        {
-            Console.WriteLine($"SchedulerLogic: batch - {workflowIds.Count} jobs");
-            // TODO: Implement batch logic
-            return workflowIds;
-        }
-
-        public void queue(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: queue - workflowId={workflowId}");
-            // TODO: Implement queue logic
-        }
-
-        public void prioritize(long workflowId, int priority)
-        {
-            Console.WriteLine($"SchedulerLogic: prioritize - ID={workflowId}, priority={priority}");
-            // TODO: Implement prioritize logic
-        }
-
         // =====================================
         // System Management Operations
         // =====================================
-
 
         public void unregister(long workflowId)
         {
             Console.WriteLine($"SchedulerLogic: unregister - ID={workflowId}");
             // TODO: Implement unregister logic
-        }
-
-        public object health()
-        {
-            Console.WriteLine($"SchedulerLogic: health");
-            // TODO: Implement health logic
-            return new { status = "healthy" };
-        }
-
-        public void recover()
-        {
-            Console.WriteLine($"SchedulerLogic: recover");
-            // TODO: Implement recover logic
-        }
-
-        public void migrate(long workflowId, string targetAgent)
-        {
-            Console.WriteLine($"SchedulerLogic: migrate - ID={workflowId}, targetAgent={targetAgent}");
-            // TODO: Implement migrate logic
-        }
-
-        // =====================================
-        // Configuration Operations
-        // =====================================
-
-        public void configure(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: configure - workflowId={workflowId}");
-            // TODO: Implement configure logic
-        }
-
-        public void update(long workflowId, object updateData)
-        {
-            Console.WriteLine($"SchedulerLogic: update - ID={workflowId}");
-            // TODO: Implement update logic
-        }
-
-        public object validate(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: validate - workflowId={workflowId}");
-            // TODO: Implement validate logic
-            return new { valid = true };
-        }
-
-        // =====================================
-        // Standard Operations
-        // =====================================
-
-        public List<long> select()
-        {
-            Console.WriteLine("SchedulerLogic: select all workflows");
-            // TODO: Implement select logic
-            return new List<long>();
-        }
-
-        public object get(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: get - ID={workflowId}");
-            // TODO: Implement get logic
-            return new { workflowId, status = "unknown" };
-        }
-
-        public long insert(object workflowDefinition)
-        {
-            Console.WriteLine($"SchedulerLogic: insert - create workflow");
-            // TODO: Implement insert logic
-            // - Create new workflow record
-            // - Return workflow ID
-            return 0;
-        }
-
-        public void delete(long workflowId)
-        {
-            Console.WriteLine($"SchedulerLogic: delete - ID={workflowId}");
-            // TODO: Implement delete logic
         }
     }
 }

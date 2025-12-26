@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\common\common.csproj" />
-     <ProjectReference Include="..\..\shared\domain\domain.csproj" />
-       <ProjectReference Include="..\logic\logic.csproj" />
+    <ProjectReference Include="..\..\shared\domain\domain.csproj" />
+    <ProjectReference Include="..\..\server\logic\logic.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,3 +20,4 @@
   </ItemGroup>
 
 </Project>
+
