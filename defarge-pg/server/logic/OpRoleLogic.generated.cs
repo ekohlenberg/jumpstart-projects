@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing OpRoleLogic select<TBaseObject> List");
+            Logger.Debug("Processing OpRoleLogic select<TBaseObject> List");
 
             List<TBaseObject> oproles = select<TBaseObject>("sec.op_role-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OpRoleLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing OpRoleLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> oproles = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OpRoleLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing OpRoleLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "sec.op_role-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  OpRole get(long id)
         {
-            Console.WriteLine($"Processing OpRoleLogic get ID={id}");
+            Logger.Debug($"Processing OpRoleLogic get ID={id}");
 
             OpRole oprole = DBPersist.select<OpRole>($"SELECT * FROM sec.op_role WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(OpRole oprole)
         {
-            Console.WriteLine($"Processing OpRoleLogic insert: {oprole}");
+            Logger.Debug($"Processing OpRoleLogic insert: {oprole}");
 
             oprole.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(OpRole oprole)
         {
-            Console.WriteLine($"Processing OpRoleLogic put: {oprole}");
+            Logger.Debug($"Processing OpRoleLogic put: {oprole}");
 
             oprole.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, OpRole oprole)
         {
-            Console.WriteLine($"Processing OpRoleLogic update: ID = {id}\n{oprole}");
+            Logger.Debug($"Processing OpRoleLogic update: ID = {id}\n{oprole}");
 
             oprole.id = id;
             DBPersist.update(oprole);

@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing AlertLogic select<TBaseObject> List");
+            Logger.Debug("Processing AlertLogic select<TBaseObject> List");
 
             List<TBaseObject> alerts = select<TBaseObject>("app.alert-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing AlertLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing AlertLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> alerts = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing AlertLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing AlertLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.alert-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Alert get(long id)
         {
-            Console.WriteLine($"Processing AlertLogic get ID={id}");
+            Logger.Debug($"Processing AlertLogic get ID={id}");
 
             Alert alert = DBPersist.select<Alert>($"SELECT * FROM app.alert WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Alert alert)
         {
-            Console.WriteLine($"Processing AlertLogic insert: {alert}");
+            Logger.Debug($"Processing AlertLogic insert: {alert}");
 
             alert.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Alert alert)
         {
-            Console.WriteLine($"Processing AlertLogic put: {alert}");
+            Logger.Debug($"Processing AlertLogic put: {alert}");
 
             alert.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Alert alert)
         {
-            Console.WriteLine($"Processing AlertLogic update: ID = {id}\n{alert}");
+            Logger.Debug($"Processing AlertLogic update: ID = {id}\n{alert}");
 
             alert.id = id;
             DBPersist.update(alert);

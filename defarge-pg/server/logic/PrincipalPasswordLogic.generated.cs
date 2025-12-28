@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing PrincipalPasswordLogic select<TBaseObject> List");
+            Logger.Debug("Processing PrincipalPasswordLogic select<TBaseObject> List");
 
             List<TBaseObject> principalpasswords = select<TBaseObject>("sec.principal_password-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing PrincipalPasswordLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing PrincipalPasswordLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> principalpasswords = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing PrincipalPasswordLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing PrincipalPasswordLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "sec.principal_password-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  PrincipalPassword get(long id)
         {
-            Console.WriteLine($"Processing PrincipalPasswordLogic get ID={id}");
+            Logger.Debug($"Processing PrincipalPasswordLogic get ID={id}");
 
             PrincipalPassword principalpassword = DBPersist.select<PrincipalPassword>($"SELECT * FROM sec.principal_password WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(PrincipalPassword principalpassword)
         {
-            Console.WriteLine($"Processing PrincipalPasswordLogic insert: {principalpassword}");
+            Logger.Debug($"Processing PrincipalPasswordLogic insert: {principalpassword}");
 
             principalpassword.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(PrincipalPassword principalpassword)
         {
-            Console.WriteLine($"Processing PrincipalPasswordLogic put: {principalpassword}");
+            Logger.Debug($"Processing PrincipalPasswordLogic put: {principalpassword}");
 
             principalpassword.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, PrincipalPassword principalpassword)
         {
-            Console.WriteLine($"Processing PrincipalPasswordLogic update: ID = {id}\n{principalpassword}");
+            Logger.Debug($"Processing PrincipalPasswordLogic update: ID = {id}\n{principalpassword}");
 
             principalpassword.id = id;
             DBPersist.update(principalpassword);

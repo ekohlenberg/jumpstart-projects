@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing ScheduleLogic select<TBaseObject> List");
+            Logger.Debug("Processing ScheduleLogic select<TBaseObject> List");
 
             List<TBaseObject> schedules = select<TBaseObject>("core.schedule-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ScheduleLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing ScheduleLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> schedules = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ScheduleLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing ScheduleLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.schedule-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Schedule get(long id)
         {
-            Console.WriteLine($"Processing ScheduleLogic get ID={id}");
+            Logger.Debug($"Processing ScheduleLogic get ID={id}");
 
             Schedule schedule = DBPersist.select<Schedule>($"SELECT * FROM core.schedule WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Schedule schedule)
         {
-            Console.WriteLine($"Processing ScheduleLogic insert: {schedule}");
+            Logger.Debug($"Processing ScheduleLogic insert: {schedule}");
 
             schedule.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Schedule schedule)
         {
-            Console.WriteLine($"Processing ScheduleLogic put: {schedule}");
+            Logger.Debug($"Processing ScheduleLogic put: {schedule}");
 
             schedule.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Schedule schedule)
         {
-            Console.WriteLine($"Processing ScheduleLogic update: ID = {id}\n{schedule}");
+            Logger.Debug($"Processing ScheduleLogic update: ID = {id}\n{schedule}");
 
             schedule.id = id;
             DBPersist.update(schedule);

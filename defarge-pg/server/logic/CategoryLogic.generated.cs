@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing CategoryLogic select<TBaseObject> List");
+            Logger.Debug("Processing CategoryLogic select<TBaseObject> List");
 
             List<TBaseObject> categorys = select<TBaseObject>("app.category-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing CategoryLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing CategoryLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> categorys = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing CategoryLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing CategoryLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.category-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Category get(long id)
         {
-            Console.WriteLine($"Processing CategoryLogic get ID={id}");
+            Logger.Debug($"Processing CategoryLogic get ID={id}");
 
             Category category = DBPersist.select<Category>($"SELECT * FROM app.category WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Category category)
         {
-            Console.WriteLine($"Processing CategoryLogic insert: {category}");
+            Logger.Debug($"Processing CategoryLogic insert: {category}");
 
             category.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Category category)
         {
-            Console.WriteLine($"Processing CategoryLogic put: {category}");
+            Logger.Debug($"Processing CategoryLogic put: {category}");
 
             category.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Category category)
         {
-            Console.WriteLine($"Processing CategoryLogic update: ID = {id}\n{category}");
+            Logger.Debug($"Processing CategoryLogic update: ID = {id}\n{category}");
 
             category.id = id;
             DBPersist.update(category);

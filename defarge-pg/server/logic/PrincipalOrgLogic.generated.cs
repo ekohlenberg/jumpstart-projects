@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing PrincipalOrgLogic select<TBaseObject> List");
+            Logger.Debug("Processing PrincipalOrgLogic select<TBaseObject> List");
 
             List<TBaseObject> principalorgs = select<TBaseObject>("app.principal_org-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing PrincipalOrgLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing PrincipalOrgLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> principalorgs = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing PrincipalOrgLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing PrincipalOrgLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.principal_org-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  PrincipalOrg get(long id)
         {
-            Console.WriteLine($"Processing PrincipalOrgLogic get ID={id}");
+            Logger.Debug($"Processing PrincipalOrgLogic get ID={id}");
 
             PrincipalOrg principalorg = DBPersist.select<PrincipalOrg>($"SELECT * FROM app.principal_org WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(PrincipalOrg principalorg)
         {
-            Console.WriteLine($"Processing PrincipalOrgLogic insert: {principalorg}");
+            Logger.Debug($"Processing PrincipalOrgLogic insert: {principalorg}");
 
             principalorg.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(PrincipalOrg principalorg)
         {
-            Console.WriteLine($"Processing PrincipalOrgLogic put: {principalorg}");
+            Logger.Debug($"Processing PrincipalOrgLogic put: {principalorg}");
 
             principalorg.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, PrincipalOrg principalorg)
         {
-            Console.WriteLine($"Processing PrincipalOrgLogic update: ID = {id}\n{principalorg}");
+            Logger.Debug($"Processing PrincipalOrgLogic update: ID = {id}\n{principalorg}");
 
             principalorg.id = id;
             DBPersist.update(principalorg);

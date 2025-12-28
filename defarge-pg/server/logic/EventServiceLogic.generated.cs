@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing EventServiceLogic select<TBaseObject> List");
+            Logger.Debug("Processing EventServiceLogic select<TBaseObject> List");
 
             List<TBaseObject> eventservices = select<TBaseObject>("core.event_service-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing EventServiceLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing EventServiceLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> eventservices = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing EventServiceLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing EventServiceLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.event_service-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  EventService get(long id)
         {
-            Console.WriteLine($"Processing EventServiceLogic get ID={id}");
+            Logger.Debug($"Processing EventServiceLogic get ID={id}");
 
             EventService eventservice = DBPersist.select<EventService>($"SELECT * FROM core.event_service WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(EventService eventservice)
         {
-            Console.WriteLine($"Processing EventServiceLogic insert: {eventservice}");
+            Logger.Debug($"Processing EventServiceLogic insert: {eventservice}");
 
             eventservice.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(EventService eventservice)
         {
-            Console.WriteLine($"Processing EventServiceLogic put: {eventservice}");
+            Logger.Debug($"Processing EventServiceLogic put: {eventservice}");
 
             eventservice.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, EventService eventservice)
         {
-            Console.WriteLine($"Processing EventServiceLogic update: ID = {id}\n{eventservice}");
+            Logger.Debug($"Processing EventServiceLogic update: ID = {id}\n{eventservice}");
 
             eventservice.id = id;
             DBPersist.update(eventservice);

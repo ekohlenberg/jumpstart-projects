@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing ExecutionLogic select<TBaseObject> List");
+            Logger.Debug("Processing ExecutionLogic select<TBaseObject> List");
 
             List<TBaseObject> executions = select<TBaseObject>("core.execution-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ExecutionLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing ExecutionLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> executions = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ExecutionLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing ExecutionLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.execution-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Execution get(long id)
         {
-            Console.WriteLine($"Processing ExecutionLogic get ID={id}");
+            Logger.Debug($"Processing ExecutionLogic get ID={id}");
 
             Execution execution = DBPersist.select<Execution>($"SELECT * FROM core.execution WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Execution execution)
         {
-            Console.WriteLine($"Processing ExecutionLogic insert: {execution}");
+            Logger.Debug($"Processing ExecutionLogic insert: {execution}");
 
             execution.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Execution execution)
         {
-            Console.WriteLine($"Processing ExecutionLogic put: {execution}");
+            Logger.Debug($"Processing ExecutionLogic put: {execution}");
 
             execution.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Execution execution)
         {
-            Console.WriteLine($"Processing ExecutionLogic update: ID = {id}\n{execution}");
+            Logger.Debug($"Processing ExecutionLogic update: ID = {id}\n{execution}");
 
             execution.id = id;
             DBPersist.update(execution);

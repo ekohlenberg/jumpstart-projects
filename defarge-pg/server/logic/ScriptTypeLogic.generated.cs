@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing ScriptTypeLogic select<TBaseObject> List");
+            Logger.Debug("Processing ScriptTypeLogic select<TBaseObject> List");
 
             List<TBaseObject> scripttypes = select<TBaseObject>("core.script_type-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ScriptTypeLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing ScriptTypeLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> scripttypes = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ScriptTypeLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing ScriptTypeLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.script_type-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  ScriptType get(long id)
         {
-            Console.WriteLine($"Processing ScriptTypeLogic get ID={id}");
+            Logger.Debug($"Processing ScriptTypeLogic get ID={id}");
 
             ScriptType scripttype = DBPersist.select<ScriptType>($"SELECT * FROM core.script_type WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(ScriptType scripttype)
         {
-            Console.WriteLine($"Processing ScriptTypeLogic insert: {scripttype}");
+            Logger.Debug($"Processing ScriptTypeLogic insert: {scripttype}");
 
             scripttype.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(ScriptType scripttype)
         {
-            Console.WriteLine($"Processing ScriptTypeLogic put: {scripttype}");
+            Logger.Debug($"Processing ScriptTypeLogic put: {scripttype}");
 
             scripttype.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, ScriptType scripttype)
         {
-            Console.WriteLine($"Processing ScriptTypeLogic update: ID = {id}\n{scripttype}");
+            Logger.Debug($"Processing ScriptTypeLogic update: ID = {id}\n{scripttype}");
 
             scripttype.id = id;
             DBPersist.update(scripttype);

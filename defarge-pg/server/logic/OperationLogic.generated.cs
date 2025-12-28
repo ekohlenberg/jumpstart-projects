@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing OperationLogic select<TBaseObject> List");
+            Logger.Debug("Processing OperationLogic select<TBaseObject> List");
 
             List<TBaseObject> operations = select<TBaseObject>("sec.operation-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OperationLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing OperationLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> operations = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OperationLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing OperationLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "sec.operation-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Operation get(long id)
         {
-            Console.WriteLine($"Processing OperationLogic get ID={id}");
+            Logger.Debug($"Processing OperationLogic get ID={id}");
 
             Operation operation = DBPersist.select<Operation>($"SELECT * FROM sec.operation WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Operation operation)
         {
-            Console.WriteLine($"Processing OperationLogic insert: {operation}");
+            Logger.Debug($"Processing OperationLogic insert: {operation}");
 
             operation.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Operation operation)
         {
-            Console.WriteLine($"Processing OperationLogic put: {operation}");
+            Logger.Debug($"Processing OperationLogic put: {operation}");
 
             operation.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Operation operation)
         {
-            Console.WriteLine($"Processing OperationLogic update: ID = {id}\n{operation}");
+            Logger.Debug($"Processing OperationLogic update: ID = {id}\n{operation}");
 
             operation.id = id;
             DBPersist.update(operation);

@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing MetricLogic select<TBaseObject> List");
+            Logger.Debug("Processing MetricLogic select<TBaseObject> List");
 
             List<TBaseObject> metrics = select<TBaseObject>("app.metric-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing MetricLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing MetricLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> metrics = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing MetricLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing MetricLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.metric-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Metric get(long id)
         {
-            Console.WriteLine($"Processing MetricLogic get ID={id}");
+            Logger.Debug($"Processing MetricLogic get ID={id}");
 
             Metric metric = DBPersist.select<Metric>($"SELECT * FROM app.metric WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Metric metric)
         {
-            Console.WriteLine($"Processing MetricLogic insert: {metric}");
+            Logger.Debug($"Processing MetricLogic insert: {metric}");
 
             metric.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Metric metric)
         {
-            Console.WriteLine($"Processing MetricLogic put: {metric}");
+            Logger.Debug($"Processing MetricLogic put: {metric}");
 
             metric.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Metric metric)
         {
-            Console.WriteLine($"Processing MetricLogic update: ID = {id}\n{metric}");
+            Logger.Debug($"Processing MetricLogic update: ID = {id}\n{metric}");
 
             metric.id = id;
             DBPersist.update(metric);

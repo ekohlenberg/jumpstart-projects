@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing ProcessLogic select<TBaseObject> List");
+            Logger.Debug("Processing ProcessLogic select<TBaseObject> List");
 
             List<TBaseObject> processs = select<TBaseObject>("core.process-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ProcessLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing ProcessLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> processs = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ProcessLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing ProcessLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.process-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Process get(long id)
         {
-            Console.WriteLine($"Processing ProcessLogic get ID={id}");
+            Logger.Debug($"Processing ProcessLogic get ID={id}");
 
             Process process = DBPersist.select<Process>($"SELECT * FROM core.process WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Process process)
         {
-            Console.WriteLine($"Processing ProcessLogic insert: {process}");
+            Logger.Debug($"Processing ProcessLogic insert: {process}");
 
             process.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Process process)
         {
-            Console.WriteLine($"Processing ProcessLogic put: {process}");
+            Logger.Debug($"Processing ProcessLogic put: {process}");
 
             process.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Process process)
         {
-            Console.WriteLine($"Processing ProcessLogic update: ID = {id}\n{process}");
+            Logger.Debug($"Processing ProcessLogic update: ID = {id}\n{process}");
 
             process.id = id;
             DBPersist.update(process);

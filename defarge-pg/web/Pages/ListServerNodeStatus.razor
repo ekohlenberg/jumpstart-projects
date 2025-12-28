@@ -1,0 +1,65 @@
+@page "/servernodestatus"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Server Node Status</PageTitle>
+
+<h1>Server Node Status</h1>
+
+<p>This component demonstrates fetching Server Node Status data from the server.</p>
+
+@if (servernodestatusList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@servernodestatusList.Length} items");
+ 
+    
+    <DataTable Data="@servernodestatusList" 
+               DataType="typeof(ServerNodeStatusView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditServerNodeStatus"
+               OnAdd="@OnAddServerNodeStatus" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ServerNodeStatusView[]? servernodestatusList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        servernodestatusList = await remoteClient.GetFromJsonAsync<ServerNodeStatusView[]>("api/servernodestatus");
+        
+        Console.WriteLine($"ListTemplate: Loaded {servernodestatusList?.Length ?? 0} servernodestatus records");
+        if (servernodestatusList != null && servernodestatusList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {servernodestatusList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddServerNodeStatus()
+    {
+        Navigation.NavigateTo("edit-servernodestatus");
+    }
+
+    async Task OnEditServerNodeStatus(object item)
+    {
+        var servernodestatus = (ServerNodeStatusView)item;
+        Navigation.NavigateTo($"edit-servernodestatus/{servernodestatus.id}");
+    }
+
+}

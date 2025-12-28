@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing OnFailureLogic select<TBaseObject> List");
+            Logger.Debug("Processing OnFailureLogic select<TBaseObject> List");
 
             List<TBaseObject> onfailures = select<TBaseObject>("core.on_failure-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OnFailureLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing OnFailureLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> onfailures = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OnFailureLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing OnFailureLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.on_failure-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  OnFailure get(long id)
         {
-            Console.WriteLine($"Processing OnFailureLogic get ID={id}");
+            Logger.Debug($"Processing OnFailureLogic get ID={id}");
 
             OnFailure onfailure = DBPersist.select<OnFailure>($"SELECT * FROM core.on_failure WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(OnFailure onfailure)
         {
-            Console.WriteLine($"Processing OnFailureLogic insert: {onfailure}");
+            Logger.Debug($"Processing OnFailureLogic insert: {onfailure}");
 
             onfailure.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(OnFailure onfailure)
         {
-            Console.WriteLine($"Processing OnFailureLogic put: {onfailure}");
+            Logger.Debug($"Processing OnFailureLogic put: {onfailure}");
 
             onfailure.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, OnFailure onfailure)
         {
-            Console.WriteLine($"Processing OnFailureLogic update: ID = {id}\n{onfailure}");
+            Logger.Debug($"Processing OnFailureLogic update: ID = {id}\n{onfailure}");
 
             onfailure.id = id;
             DBPersist.update(onfailure);

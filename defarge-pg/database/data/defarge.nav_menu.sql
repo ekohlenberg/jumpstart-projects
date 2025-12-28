@@ -102,17 +102,13 @@ INSERT INTO core.nav_menu(
         
 INSERT INTO core.nav_menu(
 	id, parent_id, ordinal, name, link, is_active, created_by, last_updated, last_updated_by, version)
-	VALUES (nextval('core.nav_menu_identity'), (SELECT id FROM core.nav_menu WHERE parent_id = 0 AND name = 'System'), 6, 'Scheduler', '/scheduler', 1, current_user, now(), current_user, 1);
+	VALUES (nextval('core.nav_menu_identity'), (SELECT id FROM core.nav_menu WHERE parent_id = 0 AND name = 'System'), 6, 'Server Node', '/servernode', 1, current_user, now(), current_user, 1);
         
 INSERT INTO core.nav_menu(
 	id, parent_id, ordinal, name, link, is_active, created_by, last_updated, last_updated_by, version)
-	VALUES (nextval('core.nav_menu_identity'), (SELECT id FROM core.nav_menu WHERE parent_id = 0 AND name = 'System'), 7, 'Agent', '/agent', 1, current_user, now(), current_user, 1);
+	VALUES (nextval('core.nav_menu_identity'), (SELECT id FROM core.nav_menu WHERE parent_id = 0 AND name = 'System'), 7, 'Query', '/sql', 1, current_user, now(), current_user, 1);
         
 INSERT INTO core.nav_menu(
 	id, parent_id, ordinal, name, link, is_active, created_by, last_updated, last_updated_by, version)
-	VALUES (nextval('core.nav_menu_identity'), (SELECT id FROM core.nav_menu WHERE parent_id = 0 AND name = 'System'), 8, 'Query', '/sql', 1, current_user, now(), current_user, 1);
-        
-INSERT INTO core.nav_menu(
-	id, parent_id, ordinal, name, link, is_active, created_by, last_updated, last_updated_by, version)
-	VALUES (nextval('core.nav_menu_identity'), (SELECT id FROM core.nav_menu WHERE parent_id = 0 AND name = 'System'), 9, 'Data Source', '/datasource', 1, current_user, now(), current_user, 1);
+	VALUES (nextval('core.nav_menu_identity'), (SELECT id FROM core.nav_menu WHERE parent_id = 0 AND name = 'System'), 8, 'Data Source', '/datasource', 1, current_user, now(), current_user, 1);
         

@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing UomLogic select<TBaseObject> List");
+            Logger.Debug("Processing UomLogic select<TBaseObject> List");
 
             List<TBaseObject> uoms = select<TBaseObject>("app.uom-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing UomLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing UomLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> uoms = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing UomLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing UomLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.uom-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Uom get(long id)
         {
-            Console.WriteLine($"Processing UomLogic get ID={id}");
+            Logger.Debug($"Processing UomLogic get ID={id}");
 
             Uom uom = DBPersist.select<Uom>($"SELECT * FROM app.uom WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Uom uom)
         {
-            Console.WriteLine($"Processing UomLogic insert: {uom}");
+            Logger.Debug($"Processing UomLogic insert: {uom}");
 
             uom.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Uom uom)
         {
-            Console.WriteLine($"Processing UomLogic put: {uom}");
+            Logger.Debug($"Processing UomLogic put: {uom}");
 
             uom.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Uom uom)
         {
-            Console.WriteLine($"Processing UomLogic update: ID = {id}\n{uom}");
+            Logger.Debug($"Processing UomLogic update: ID = {id}\n{uom}");
 
             uom.id = id;
             DBPersist.update(uom);

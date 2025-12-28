@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing SqlLogic select<TBaseObject> List");
+            Logger.Debug("Processing SqlLogic select<TBaseObject> List");
 
             List<TBaseObject> sqls = select<TBaseObject>("core.sql-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing SqlLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing SqlLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> sqls = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing SqlLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing SqlLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.sql-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Sql get(long id)
         {
-            Console.WriteLine($"Processing SqlLogic get ID={id}");
+            Logger.Debug($"Processing SqlLogic get ID={id}");
 
             Sql sql = DBPersist.select<Sql>($"SELECT * FROM core.sql WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Sql sql)
         {
-            Console.WriteLine($"Processing SqlLogic insert: {sql}");
+            Logger.Debug($"Processing SqlLogic insert: {sql}");
 
             sql.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Sql sql)
         {
-            Console.WriteLine($"Processing SqlLogic put: {sql}");
+            Logger.Debug($"Processing SqlLogic put: {sql}");
 
             sql.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Sql sql)
         {
-            Console.WriteLine($"Processing SqlLogic update: ID = {id}\n{sql}");
+            Logger.Debug($"Processing SqlLogic update: ID = {id}\n{sql}");
 
             sql.id = id;
             DBPersist.update(sql);

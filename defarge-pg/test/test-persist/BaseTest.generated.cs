@@ -338,11 +338,14 @@ private static Dictionary<string, long> _lastIdMap = null;
             protected static Stack<ExecStatus> lastExecStatus = new Stack<ExecStatus>();
             protected static Dictionary<long, ExecStatus> mapExecStatus = new Dictionary<long, ExecStatus>();
             
-            protected static Stack<SchedulerStatus> lastSchedulerStatus = new Stack<SchedulerStatus>();
-            protected static Dictionary<long, SchedulerStatus> mapSchedulerStatus = new Dictionary<long, SchedulerStatus>();
+            protected static Stack<ServerNodeStatus> lastServerNodeStatus = new Stack<ServerNodeStatus>();
+            protected static Dictionary<long, ServerNodeStatus> mapServerNodeStatus = new Dictionary<long, ServerNodeStatus>();
             
             protected static Stack<ScriptType> lastScriptType = new Stack<ScriptType>();
             protected static Dictionary<long, ScriptType> mapScriptType = new Dictionary<long, ScriptType>();
+            
+            protected static Stack<ServerNodeType> lastServerNodeType = new Stack<ServerNodeType>();
+            protected static Dictionary<long, ServerNodeType> mapServerNodeType = new Dictionary<long, ServerNodeType>();
             
             protected static Stack<Metric> lastMetric = new Stack<Metric>();
             protected static Dictionary<long, Metric> mapMetric = new Dictionary<long, Metric>();
@@ -368,14 +371,11 @@ private static Dictionary<string, long> _lastIdMap = null;
             protected static Stack<Sql> lastSql = new Stack<Sql>();
             protected static Dictionary<long, Sql> mapSql = new Dictionary<long, Sql>();
             
-            protected static Stack<Agent> lastAgent = new Stack<Agent>();
-            protected static Dictionary<long, Agent> mapAgent = new Dictionary<long, Agent>();
-            
-            protected static Stack<Scheduler> lastScheduler = new Stack<Scheduler>();
-            protected static Dictionary<long, Scheduler> mapScheduler = new Dictionary<long, Scheduler>();
-            
             protected static Stack<Script> lastScript = new Stack<Script>();
             protected static Dictionary<long, Script> mapScript = new Dictionary<long, Script>();
+            
+            protected static Stack<ServerNode> lastServerNode = new Stack<ServerNode>();
+            protected static Dictionary<long, ServerNode> mapServerNode = new Dictionary<long, ServerNode>();
             
             protected static Stack<MetricEvent> lastMetricEvent = new Stack<MetricEvent>();
             protected static Dictionary<long, MetricEvent> mapMetricEvent = new Dictionary<long, MetricEvent>();

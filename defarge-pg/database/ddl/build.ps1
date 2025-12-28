@@ -950,8 +950,8 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
         
-Write-Host "Executing: SchedulerStatus.table.generated.sql"
-$sqlFile = ".\SchedulerStatus.table.generated.sql"
+Write-Host "Executing: ServerNodeStatus.table.generated.sql"
+$sqlFile = ".\ServerNodeStatus.table.generated.sql"
 if (-not (Test-Path $sqlFile)) {
     Write-Warning "SQL file not found, skipping: $sqlFile"
     continue
@@ -964,8 +964,8 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
         
-Write-Host "Executing: SchedulerStatus.audit.generated.sql"
-$sqlFile = ".\SchedulerStatus.audit.generated.sql"
+Write-Host "Executing: ServerNodeStatus.audit.generated.sql"
+$sqlFile = ".\ServerNodeStatus.audit.generated.sql"
 if (-not (Test-Path $sqlFile)) {
     Write-Warning "SQL file not found, skipping: $sqlFile"
     continue
@@ -978,8 +978,8 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
         
-Write-Host "Executing: SchedulerStatus.sequence.generated.sql"
-$sqlFile = ".\SchedulerStatus.sequence.generated.sql"
+Write-Host "Executing: ServerNodeStatus.sequence.generated.sql"
+$sqlFile = ".\ServerNodeStatus.sequence.generated.sql"
 if (-not (Test-Path $sqlFile)) {
     Write-Warning "SQL file not found, skipping: $sqlFile"
     continue
@@ -992,8 +992,8 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
         
-Write-Host "Executing: SchedulerStatus.rwkindex.generated.sql"
-$sqlFile = ".\SchedulerStatus.rwkindex.generated.sql"
+Write-Host "Executing: ServerNodeStatus.rwkindex.generated.sql"
+$sqlFile = ".\ServerNodeStatus.rwkindex.generated.sql"
 if (-not (Test-Path $sqlFile)) {
     Write-Warning "SQL file not found, skipping: $sqlFile"
     continue
@@ -1050,6 +1050,62 @@ if ($LASTEXITCODE -ne 0) {
         
 Write-Host "Executing: ScriptType.rwkindex.generated.sql"
 $sqlFile = ".\ScriptType.rwkindex.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNodeType.table.generated.sql"
+$sqlFile = ".\ServerNodeType.table.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNodeType.audit.generated.sql"
+$sqlFile = ".\ServerNodeType.audit.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNodeType.sequence.generated.sql"
+$sqlFile = ".\ServerNodeType.sequence.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNodeType.rwkindex.generated.sql"
+$sqlFile = ".\ServerNodeType.rwkindex.generated.sql"
 if (-not (Test-Path $sqlFile)) {
     Write-Warning "SQL file not found, skipping: $sqlFile"
     continue
@@ -1510,118 +1566,6 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
         
-Write-Host "Executing: Agent.table.generated.sql"
-$sqlFile = ".\Agent.table.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
-Write-Host "Executing: Agent.audit.generated.sql"
-$sqlFile = ".\Agent.audit.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
-Write-Host "Executing: Agent.sequence.generated.sql"
-$sqlFile = ".\Agent.sequence.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
-Write-Host "Executing: Agent.rwkindex.generated.sql"
-$sqlFile = ".\Agent.rwkindex.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
-Write-Host "Executing: Scheduler.table.generated.sql"
-$sqlFile = ".\Scheduler.table.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
-Write-Host "Executing: Scheduler.audit.generated.sql"
-$sqlFile = ".\Scheduler.audit.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
-Write-Host "Executing: Scheduler.sequence.generated.sql"
-$sqlFile = ".\Scheduler.sequence.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
-Write-Host "Executing: Scheduler.rwkindex.generated.sql"
-$sqlFile = ".\Scheduler.rwkindex.generated.sql"
-if (-not (Test-Path $sqlFile)) {
-    Write-Warning "SQL file not found, skipping: $sqlFile"
-    continue
-}
-
-psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to execute: $sqlFile"
-    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
-    exit $LASTEXITCODE
-}
-        
 Write-Host "Executing: Script.table.generated.sql"
 $sqlFile = ".\Script.table.generated.sql"
 if (-not (Test-Path $sqlFile)) {
@@ -1666,6 +1610,62 @@ if ($LASTEXITCODE -ne 0) {
         
 Write-Host "Executing: Script.rwkindex.generated.sql"
 $sqlFile = ".\Script.rwkindex.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNode.table.generated.sql"
+$sqlFile = ".\ServerNode.table.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNode.audit.generated.sql"
+$sqlFile = ".\ServerNode.audit.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNode.sequence.generated.sql"
+$sqlFile = ".\ServerNode.sequence.generated.sql"
+if (-not (Test-Path $sqlFile)) {
+    Write-Warning "SQL file not found, skipping: $sqlFile"
+    continue
+}
+
+psql --host=$server --port=$port --dbname=$database --username=$username --file="$sqlFile"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to execute: $sqlFile"
+    Write-Error "Check the SQL file for syntax errors and ensure the database connection is working."
+    exit $LASTEXITCODE
+}
+        
+Write-Host "Executing: ServerNode.rwkindex.generated.sql"
+$sqlFile = ".\ServerNode.rwkindex.generated.sql"
 if (-not (Test-Path $sqlFile)) {
     Write-Warning "SQL file not found, skipping: $sqlFile"
     continue

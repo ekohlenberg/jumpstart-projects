@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing OpRoleMapLogic select<TBaseObject> List");
+            Logger.Debug("Processing OpRoleMapLogic select<TBaseObject> List");
 
             List<TBaseObject> oprolemaps = select<TBaseObject>("sec.op_role_map-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OpRoleMapLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing OpRoleMapLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> oprolemaps = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OpRoleMapLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing OpRoleMapLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "sec.op_role_map-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  OpRoleMap get(long id)
         {
-            Console.WriteLine($"Processing OpRoleMapLogic get ID={id}");
+            Logger.Debug($"Processing OpRoleMapLogic get ID={id}");
 
             OpRoleMap oprolemap = DBPersist.select<OpRoleMap>($"SELECT * FROM sec.op_role_map WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(OpRoleMap oprolemap)
         {
-            Console.WriteLine($"Processing OpRoleMapLogic insert: {oprolemap}");
+            Logger.Debug($"Processing OpRoleMapLogic insert: {oprolemap}");
 
             oprolemap.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(OpRoleMap oprolemap)
         {
-            Console.WriteLine($"Processing OpRoleMapLogic put: {oprolemap}");
+            Logger.Debug($"Processing OpRoleMapLogic put: {oprolemap}");
 
             oprolemap.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, OpRoleMap oprolemap)
         {
-            Console.WriteLine($"Processing OpRoleMapLogic update: ID = {id}\n{oprolemap}");
+            Logger.Debug($"Processing OpRoleMapLogic update: ID = {id}\n{oprolemap}");
 
             oprolemap.id = id;
             DBPersist.update(oprolemap);

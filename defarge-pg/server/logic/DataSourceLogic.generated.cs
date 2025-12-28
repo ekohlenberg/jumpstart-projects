@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing DataSourceLogic select<TBaseObject> List");
+            Logger.Debug("Processing DataSourceLogic select<TBaseObject> List");
 
             List<TBaseObject> datasources = select<TBaseObject>("core.data_source-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing DataSourceLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing DataSourceLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> datasources = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing DataSourceLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing DataSourceLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.data_source-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  DataSource get(long id)
         {
-            Console.WriteLine($"Processing DataSourceLogic get ID={id}");
+            Logger.Debug($"Processing DataSourceLogic get ID={id}");
 
             DataSource datasource = DBPersist.select<DataSource>($"SELECT * FROM core.data_source WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(DataSource datasource)
         {
-            Console.WriteLine($"Processing DataSourceLogic insert: {datasource}");
+            Logger.Debug($"Processing DataSourceLogic insert: {datasource}");
 
             datasource.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(DataSource datasource)
         {
-            Console.WriteLine($"Processing DataSourceLogic put: {datasource}");
+            Logger.Debug($"Processing DataSourceLogic put: {datasource}");
 
             datasource.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, DataSource datasource)
         {
-            Console.WriteLine($"Processing DataSourceLogic update: ID = {id}\n{datasource}");
+            Logger.Debug($"Processing DataSourceLogic update: ID = {id}\n{datasource}");
 
             datasource.id = id;
             DBPersist.update(datasource);

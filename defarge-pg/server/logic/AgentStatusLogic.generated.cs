@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing AgentStatusLogic select<TBaseObject> List");
+            Logger.Debug("Processing AgentStatusLogic select<TBaseObject> List");
 
             List<TBaseObject> agentstatuss = select<TBaseObject>("core.agent_status-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing AgentStatusLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing AgentStatusLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> agentstatuss = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing AgentStatusLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing AgentStatusLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.agent_status-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  AgentStatus get(long id)
         {
-            Console.WriteLine($"Processing AgentStatusLogic get ID={id}");
+            Logger.Debug($"Processing AgentStatusLogic get ID={id}");
 
             AgentStatus agentstatus = DBPersist.select<AgentStatus>($"SELECT * FROM core.agent_status WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(AgentStatus agentstatus)
         {
-            Console.WriteLine($"Processing AgentStatusLogic insert: {agentstatus}");
+            Logger.Debug($"Processing AgentStatusLogic insert: {agentstatus}");
 
             agentstatus.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(AgentStatus agentstatus)
         {
-            Console.WriteLine($"Processing AgentStatusLogic put: {agentstatus}");
+            Logger.Debug($"Processing AgentStatusLogic put: {agentstatus}");
 
             agentstatus.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, AgentStatus agentstatus)
         {
-            Console.WriteLine($"Processing AgentStatusLogic update: ID = {id}\n{agentstatus}");
+            Logger.Debug($"Processing AgentStatusLogic update: ID = {id}\n{agentstatus}");
 
             agentstatus.id = id;
             DBPersist.update(agentstatus);

@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing ExecStatusLogic select<TBaseObject> List");
+            Logger.Debug("Processing ExecStatusLogic select<TBaseObject> List");
 
             List<TBaseObject> execstatuss = select<TBaseObject>("core.exec_status-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ExecStatusLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing ExecStatusLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> execstatuss = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ExecStatusLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing ExecStatusLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.exec_status-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  ExecStatus get(long id)
         {
-            Console.WriteLine($"Processing ExecStatusLogic get ID={id}");
+            Logger.Debug($"Processing ExecStatusLogic get ID={id}");
 
             ExecStatus execstatus = DBPersist.select<ExecStatus>($"SELECT * FROM core.exec_status WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(ExecStatus execstatus)
         {
-            Console.WriteLine($"Processing ExecStatusLogic insert: {execstatus}");
+            Logger.Debug($"Processing ExecStatusLogic insert: {execstatus}");
 
             execstatus.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(ExecStatus execstatus)
         {
-            Console.WriteLine($"Processing ExecStatusLogic put: {execstatus}");
+            Logger.Debug($"Processing ExecStatusLogic put: {execstatus}");
 
             execstatus.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, ExecStatus execstatus)
         {
-            Console.WriteLine($"Processing ExecStatusLogic update: ID = {id}\n{execstatus}");
+            Logger.Debug($"Processing ExecStatusLogic update: ID = {id}\n{execstatus}");
 
             execstatus.id = id;
             DBPersist.update(execstatus);

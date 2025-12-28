@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing OrgLogic select<TBaseObject> List");
+            Logger.Debug("Processing OrgLogic select<TBaseObject> List");
 
             List<TBaseObject> orgs = select<TBaseObject>("app.org-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OrgLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing OrgLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> orgs = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing OrgLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing OrgLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.org-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Org get(long id)
         {
-            Console.WriteLine($"Processing OrgLogic get ID={id}");
+            Logger.Debug($"Processing OrgLogic get ID={id}");
 
             Org org = DBPersist.select<Org>($"SELECT * FROM app.org WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Org org)
         {
-            Console.WriteLine($"Processing OrgLogic insert: {org}");
+            Logger.Debug($"Processing OrgLogic insert: {org}");
 
             org.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Org org)
         {
-            Console.WriteLine($"Processing OrgLogic put: {org}");
+            Logger.Debug($"Processing OrgLogic put: {org}");
 
             org.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Org org)
         {
-            Console.WriteLine($"Processing OrgLogic update: ID = {id}\n{org}");
+            Logger.Debug($"Processing OrgLogic update: ID = {id}\n{org}");
 
             org.id = id;
             DBPersist.update(org);

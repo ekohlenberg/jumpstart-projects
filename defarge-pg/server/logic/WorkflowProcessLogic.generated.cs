@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing WorkflowProcessLogic select<TBaseObject> List");
+            Logger.Debug("Processing WorkflowProcessLogic select<TBaseObject> List");
 
             List<TBaseObject> workflowprocesss = select<TBaseObject>("core.workflow_process-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing WorkflowProcessLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing WorkflowProcessLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> workflowprocesss = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing WorkflowProcessLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing WorkflowProcessLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.workflow_process-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  WorkflowProcess get(long id)
         {
-            Console.WriteLine($"Processing WorkflowProcessLogic get ID={id}");
+            Logger.Debug($"Processing WorkflowProcessLogic get ID={id}");
 
             WorkflowProcess workflowprocess = DBPersist.select<WorkflowProcess>($"SELECT * FROM core.workflow_process WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(WorkflowProcess workflowprocess)
         {
-            Console.WriteLine($"Processing WorkflowProcessLogic insert: {workflowprocess}");
+            Logger.Debug($"Processing WorkflowProcessLogic insert: {workflowprocess}");
 
             workflowprocess.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(WorkflowProcess workflowprocess)
         {
-            Console.WriteLine($"Processing WorkflowProcessLogic put: {workflowprocess}");
+            Logger.Debug($"Processing WorkflowProcessLogic put: {workflowprocess}");
 
             workflowprocess.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, WorkflowProcess workflowprocess)
         {
-            Console.WriteLine($"Processing WorkflowProcessLogic update: ID = {id}\n{workflowprocess}");
+            Logger.Debug($"Processing WorkflowProcessLogic update: ID = {id}\n{workflowprocess}");
 
             workflowprocess.id = id;
             DBPersist.update(workflowprocess);

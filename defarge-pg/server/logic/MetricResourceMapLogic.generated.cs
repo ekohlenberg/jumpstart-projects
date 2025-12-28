@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing MetricResourceMapLogic select<TBaseObject> List");
+            Logger.Debug("Processing MetricResourceMapLogic select<TBaseObject> List");
 
             List<TBaseObject> metricresourcemaps = select<TBaseObject>("app.metric_resource_map-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing MetricResourceMapLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing MetricResourceMapLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> metricresourcemaps = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing MetricResourceMapLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing MetricResourceMapLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.metric_resource_map-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  MetricResourceMap get(long id)
         {
-            Console.WriteLine($"Processing MetricResourceMapLogic get ID={id}");
+            Logger.Debug($"Processing MetricResourceMapLogic get ID={id}");
 
             MetricResourceMap metricresourcemap = DBPersist.select<MetricResourceMap>($"SELECT * FROM app.metric_resource_map WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(MetricResourceMap metricresourcemap)
         {
-            Console.WriteLine($"Processing MetricResourceMapLogic insert: {metricresourcemap}");
+            Logger.Debug($"Processing MetricResourceMapLogic insert: {metricresourcemap}");
 
             metricresourcemap.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(MetricResourceMap metricresourcemap)
         {
-            Console.WriteLine($"Processing MetricResourceMapLogic put: {metricresourcemap}");
+            Logger.Debug($"Processing MetricResourceMapLogic put: {metricresourcemap}");
 
             metricresourcemap.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, MetricResourceMap metricresourcemap)
         {
-            Console.WriteLine($"Processing MetricResourceMapLogic update: ID = {id}\n{metricresourcemap}");
+            Logger.Debug($"Processing MetricResourceMapLogic update: ID = {id}\n{metricresourcemap}");
 
             metricresourcemap.id = id;
             DBPersist.update(metricresourcemap);

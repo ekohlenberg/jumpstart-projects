@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing ScriptLogic select<TBaseObject> List");
+            Logger.Debug("Processing ScriptLogic select<TBaseObject> List");
 
             List<TBaseObject> scripts = select<TBaseObject>("core.script-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ScriptLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing ScriptLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> scripts = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ScriptLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing ScriptLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.script-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  Script get(long id)
         {
-            Console.WriteLine($"Processing ScriptLogic get ID={id}");
+            Logger.Debug($"Processing ScriptLogic get ID={id}");
 
             Script script = DBPersist.select<Script>($"SELECT * FROM core.script WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(Script script)
         {
-            Console.WriteLine($"Processing ScriptLogic insert: {script}");
+            Logger.Debug($"Processing ScriptLogic insert: {script}");
 
             script.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(Script script)
         {
-            Console.WriteLine($"Processing ScriptLogic put: {script}");
+            Logger.Debug($"Processing ScriptLogic put: {script}");
 
             script.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, Script script)
         {
-            Console.WriteLine($"Processing ScriptLogic update: ID = {id}\n{script}");
+            Logger.Debug($"Processing ScriptLogic update: ID = {id}\n{script}");
 
             script.id = id;
             DBPersist.update(script);

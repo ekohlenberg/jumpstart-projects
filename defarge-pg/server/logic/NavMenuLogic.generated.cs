@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing NavMenuLogic select<TBaseObject> List");
+            Logger.Debug("Processing NavMenuLogic select<TBaseObject> List");
 
             List<TBaseObject> navmenus = select<TBaseObject>("core.nav_menu-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing NavMenuLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing NavMenuLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> navmenus = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing NavMenuLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing NavMenuLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "core.nav_menu-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  NavMenu get(long id)
         {
-            Console.WriteLine($"Processing NavMenuLogic get ID={id}");
+            Logger.Debug($"Processing NavMenuLogic get ID={id}");
 
             NavMenu navmenu = DBPersist.select<NavMenu>($"SELECT * FROM core.nav_menu WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(NavMenu navmenu)
         {
-            Console.WriteLine($"Processing NavMenuLogic insert: {navmenu}");
+            Logger.Debug($"Processing NavMenuLogic insert: {navmenu}");
 
             navmenu.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(NavMenu navmenu)
         {
-            Console.WriteLine($"Processing NavMenuLogic put: {navmenu}");
+            Logger.Debug($"Processing NavMenuLogic put: {navmenu}");
 
             navmenu.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, NavMenu navmenu)
         {
-            Console.WriteLine($"Processing NavMenuLogic update: ID = {id}\n{navmenu}");
+            Logger.Debug($"Processing NavMenuLogic update: ID = {id}\n{navmenu}");
 
             navmenu.id = id;
             DBPersist.update(navmenu);

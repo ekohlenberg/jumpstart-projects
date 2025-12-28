@@ -35,7 +35,7 @@ namespace defarge
     
         public  List<TBaseObject> select<TBaseObject>() where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine("Processing ResourceTypeLogic select<TBaseObject> List");
+            Logger.Debug("Processing ResourceTypeLogic select<TBaseObject> List");
 
             List<TBaseObject> resourcetypes = select<TBaseObject>("app.resource_type-select");
 
@@ -45,7 +45,7 @@ namespace defarge
 
         public List<TBaseObject> select<TBaseObject>(string queryName) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ResourceTypeLogic select<TBaseObject> with query: {queryName}");
+            Logger.Debug($"Processing ResourceTypeLogic select<TBaseObject> with query: {queryName}");
 
             List<TBaseObject> resourcetypes = DBPersist.ExecuteQueryByName<TBaseObject>(queryName);
 
@@ -61,7 +61,7 @@ namespace defarge
 
         public List<TBaseObject> children<TBaseObject>(long id, string childSuffix) where TBaseObject : BaseObject, new()
         {
-            Console.WriteLine($"Processing ResourceTypeLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
+            Logger.Debug($"Processing ResourceTypeLogic children<TBaseObject> for ID={id}, childSuffix={childSuffix}");
 
             string queryName = "app.resource_type-children-" + childSuffix;
             List<TBaseObject> children = DBPersist.ExecuteQueryByName<TBaseObject>(queryName, new BaseObject() { { "id", id } });
@@ -71,7 +71,7 @@ namespace defarge
 
         public  ResourceType get(long id)
         {
-            Console.WriteLine($"Processing ResourceTypeLogic get ID={id}");
+            Logger.Debug($"Processing ResourceTypeLogic get ID={id}");
 
             ResourceType resourcetype = DBPersist.select<ResourceType>($"SELECT * FROM app.resource_type WHERE id = {id}").FirstOrDefault();
             
@@ -81,7 +81,7 @@ namespace defarge
 
         public  void insert(ResourceType resourcetype)
         {
-            Console.WriteLine($"Processing ResourceTypeLogic insert: {resourcetype}");
+            Logger.Debug($"Processing ResourceTypeLogic insert: {resourcetype}");
 
             resourcetype.is_active = 1;
 
@@ -90,7 +90,7 @@ namespace defarge
 
         public  void put(ResourceType resourcetype)
         {
-            Console.WriteLine($"Processing ResourceTypeLogic put: {resourcetype}");
+            Logger.Debug($"Processing ResourceTypeLogic put: {resourcetype}");
 
             resourcetype.is_active = 1;
 
@@ -99,7 +99,7 @@ namespace defarge
 
         public  void update(long id, ResourceType resourcetype)
         {
-            Console.WriteLine($"Processing ResourceTypeLogic update: ID = {id}\n{resourcetype}");
+            Logger.Debug($"Processing ResourceTypeLogic update: ID = {id}\n{resourcetype}");
 
             resourcetype.id = id;
             DBPersist.update(resourcetype);

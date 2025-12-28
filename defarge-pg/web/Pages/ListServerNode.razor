@@ -1,0 +1,65 @@
+@page "/servernode"
+@using System.Net.Http;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Reflection;
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.Generic;
+@using defarge.Components;
+
+
+<PageTitle>Server Node</PageTitle>
+
+<h1>Server Node</h1>
+
+<p>This component demonstrates fetching Server Node data from the server.</p>
+
+@if (servernodeList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    Console.WriteLine($"ListTemplate: About to render DataTable with {@servernodeList.Length} items");
+ 
+    
+    <DataTable Data="@servernodeList" 
+               DataType="typeof(ServerNodeView)" 
+               ShowActions="true" 
+               ShowAddButton="true"
+               OnEdit="@OnEditServerNode"
+               OnAdd="@OnAddServerNode" />
+    
+    Console.WriteLine($"ListTemplate: DataTable rendered");
+}
+
+@code {
+    protected  ServerNodeView[]? servernodeList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var remoteClient = ClientFactory.CreateClient("RemoteAPI");
+
+        servernodeList = await remoteClient.GetFromJsonAsync<ServerNodeView[]>("api/servernode");
+        
+        Console.WriteLine($"ListTemplate: Loaded {servernodeList?.Length ?? 0} servernode records");
+        if (servernodeList != null && servernodeList.Length > 0)
+        {
+            Console.WriteLine($"ListTemplate: First item type: {servernodeList[0].GetType().Name}");
+        }
+    }
+
+    async Task OnAddServerNode()
+    {
+        Navigation.NavigateTo("edit-servernode");
+    }
+
+    async Task OnEditServerNode(object item)
+    {
+        var servernode = (ServerNodeView)item;
+        Navigation.NavigateTo($"edit-servernode/{servernode.id}");
+    }
+
+}

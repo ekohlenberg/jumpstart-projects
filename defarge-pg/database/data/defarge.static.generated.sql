@@ -1,17 +1,18 @@
 -- Insert default data source record
 insert into core.data_source (id, name) values ((SELECT nextval('core.data_source_identity')), 'default');
 
--- Insert agent status values
-insert into core.agent_status (id, name) values (1, 'Initializing');
-insert into core.agent_status (id, name) values (2, 'Online');
-insert into core.agent_status (id, name) values (3, 'Busy');
-insert into core.agent_status (id, name) values (4, 'Offline');
+-- Insert server node type values
+insert into core.server_node_type (id, name) values (1, 'Agent');
+insert into core.server_node_type (id, name) values (2, 'Scheduler');
+insert into core.server_node_type (id, name) values (3, 'ApiServer');
 
--- Insert scheduler status values
-insert into core.scheduler_status (id, name) values (1, 'Initializing');
-insert into core.scheduler_status (id, name) values (2, 'Online');
-insert into core.scheduler_status (id, name) values (3, 'Busy');
-insert into core.scheduler_status (id, name) values (4, 'Offline');
+-- Insert server node status values
+insert into core.server_node_status (id, name) values (1, 'Initializing');
+insert into core.server_node_status (id, name) values (2, 'Online');
+insert into core.server_node_status (id, name) values (3, 'Busy');
+insert into core.server_node_status (id, name) values (4, 'Offline');
+
+
 
 -- Insert on_failure action values
 insert into core.on_failure (id, action) values (1, 'Stop');
@@ -85,6 +86,12 @@ insert into sec.operation (id, objectname, methodname, is_active, last_updated, 
 insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ((SELECT nextval('sec.operation_identity')), 'Agent', 'insert', 1, current_timestamp, current_user, current_user, 1);
 insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ((SELECT nextval('sec.operation_identity')), 'Agent', 'update', 1, current_timestamp, current_user, current_user, 1);
 insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ((SELECT nextval('sec.operation_identity')), 'Agent', 'delete', 1, current_timestamp, current_user, current_user, 1);
+
+-- Scheduler Operations
+insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ((SELECT nextval('sec.operation_identity')), 'Scheduler', 'execute', 1, current_timestamp, current_user, current_user, 1);
+insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ((SELECT nextval('sec.operation_identity')), 'Scheduler', 'validate', 1, current_timestamp, current_user, current_user, 1);
+insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ((SELECT nextval('sec.operation_identity')), 'Scheduler', 'configure', 1, current_timestamp, current_user, current_user, 1);
+insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ((SELECT nextval('sec.operation_identity')), 'Scheduler', 'health', 1, current_timestamp, current_user, current_user, 1);
 
 
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Category', 'select', 1, current_timestamp, current_user, current_user,1);
@@ -227,14 +234,14 @@ insert into sec.operation (id, objectname, methodname, is_active, last_updated, 
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ExecStatus', 'children', 1, current_timestamp, current_user, current_user,1);
 		
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'put', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'delete', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'history', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'SchedulerStatus', 'children', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'select', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'get', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'insert', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'put', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'update', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'delete', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'history', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeStatus', 'children', 1, current_timestamp, current_user, current_user,1);
 		
 		
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScriptType', 'select', 1, current_timestamp, current_user, current_user,1);
@@ -245,6 +252,16 @@ insert into sec.operation (id, objectname, methodname, is_active, last_updated, 
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScriptType', 'delete', 1, current_timestamp, current_user, current_user,1);
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScriptType', 'history', 1, current_timestamp, current_user, current_user,1);
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ScriptType', 'children', 1, current_timestamp, current_user, current_user,1);
+		
+		
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'select', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'get', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'insert', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'put', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'update', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'delete', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'history', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNodeType', 'children', 1, current_timestamp, current_user, current_user,1);
 		
 		
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Metric', 'select', 1, current_timestamp, current_user, current_user,1);
@@ -327,26 +344,6 @@ insert into sec.operation (id, objectname, methodname, is_active, last_updated, 
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Sql', 'children', 1, current_timestamp, current_user, current_user,1);
 		
 		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'put', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'delete', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'history', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Agent', 'children', 1, current_timestamp, current_user, current_user,1);
-		
-		
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'select', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'get', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'insert', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'put', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'update', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'delete', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'history', 1, current_timestamp, current_user, current_user,1);
-		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Scheduler', 'children', 1, current_timestamp, current_user, current_user,1);
-		
-		
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'select', 1, current_timestamp, current_user, current_user,1);
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'get', 1, current_timestamp, current_user, current_user,1);
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'insert', 1, current_timestamp, current_user, current_user,1);
@@ -355,6 +352,16 @@ insert into sec.operation (id, objectname, methodname, is_active, last_updated, 
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'delete', 1, current_timestamp, current_user, current_user,1);
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'history', 1, current_timestamp, current_user, current_user,1);
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'Script', 'children', 1, current_timestamp, current_user, current_user,1);
+		
+		
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'select', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'get', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'insert', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'put', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'update', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'delete', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'history', 1, current_timestamp, current_user, current_user,1);
+		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'ServerNode', 'children', 1, current_timestamp, current_user, current_user,1);
 		
 		
 		insert into sec.operation (id, objectname, methodname, is_active, last_updated, created_by, last_updated_by, version) values ( (SELECT nextval('sec.operation_identity')),'MetricEvent', 'select', 1, current_timestamp, current_user, current_user,1);
